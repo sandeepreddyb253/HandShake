@@ -1,0 +1,178 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.login-form {
+  width: 300px;
+  margin: 0 auto;
+  font-family: Tahoma, Geneva, sans-serif;
+}
+.login-form h1 {
+  text-align: center;
+  color: #4d4d4d;
+  font-size: 24px;
+  padding: 20px 0 20px 0;
+}
+.login-form input[type="password"],
+.login-form input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #dddddd;
+  margin-bottom: 15px;
+  box-sizing:border-box;
+}
+.login-form input[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #1569e0;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.btn-primary{
+  width: 100%;
+  padding: 15px;
+  margin:10px auto;
+  background-color: #1569e0;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+}
+
+button{
+  width: 100%;
+  margin:10px auto;
+  background-color: #1569e0;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+}
+
+input[disabled],
+button[disabled]{
+  background-color:#3333
+}
+
+.container-fluid{
+  background-color: #1569e0;
+  border-color: #1569e0;
+  border: 2px #1569e0;
+  color:white;
+}
+
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover{
+  background-color:white;
+  color:#1569e0;
+  border-radius:8px;
+}
+
+.navbar-brand,
+.glyphicon-user,
+.glyphicon-login
+{
+  color:white !important;
+}
+
+.navbar-inverse{
+  background-color: #1569e0 !important
+}
+
+.navbar-inverse .navbar-nav>li>a{
+  color:white
+}
+
+.register-form {
+			width: 300px;
+			margin: 0 auto;
+			font-family: Tahoma, Geneva, sans-serif;
+		}
+		.register-form h1 {
+			text-align: center;
+			color: #4d4d4d;
+			font-size: 24px;
+			padding: 20px 0 20px 0;
+		}
+		.register-form input[type="password"],
+        .register-form input[type="text"] {
+			width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+		}
+
+        .register-form input[type="email"]{
+            width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+        }
+		.register-form input[type="submit"] {
+			width: 100%;
+			padding: 15px;
+            margin-top:15px;
+            background-color: #1569e0;
+			border: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+		}
+
+        #Role{
+			width: 100%;
+            height:40px;
+			padding: 15px;
+            margin-bottom:15px;
+			border: 1px solid #dddddd;
+			box-sizing: border-box;
+			cursor: pointer;
+			background-color: #ffffff;
+			
+		}
