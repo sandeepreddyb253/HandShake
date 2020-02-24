@@ -93,6 +93,7 @@ button{
   text-align: center;
 }
 
+textarea[disabled],
 input[disabled],
 button[disabled]{
   background-color:#3333

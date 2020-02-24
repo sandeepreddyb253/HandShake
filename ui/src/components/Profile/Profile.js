@@ -13,7 +13,10 @@ class Profile extends Component {
             studentExperience:[],
             stduentEducation:[],
             isExpSaveEnabled : false,
-            isEduSaveEnabled:false
+            isEduSaveEnabled:false,
+            isObjSaveEnabled:false,
+            isContactSaveEnabled : false,
+            isSkillsSaveEnabled :false
         }
         this.state = this.initialState;
         
@@ -27,6 +30,10 @@ class Profile extends Component {
         
         this.AddEducation = this.AddEducation.bind(this);
         this.EditEducation = this.EditEducation.bind(this);
+
+        this.EditObjective = this.EditObjective.bind(this);
+        this.EditContactDetails = this.EditContactDetails.bind(this);
+        this.EditSkills = this.EditSkills.bind(this);
     }  
 
     AddExperience(){
@@ -55,7 +62,10 @@ class Profile extends Component {
                     studentExperience : this.state.studentExperience.concat(response.data.studentExperience),
                     stduentEducation : this.state.stduentEducation.concat(response.data.stduentEducation),
                     isExpSaveEnabled:false,
-                    isEduSaveEnabled:false
+                    isEduSaveEnabled:false,
+                    isObjSaveEnabled:false,
+                    isContactSaveEnabled:false,
+                    isSkillsSaveEnabled:false
                 });
             });
         
@@ -71,6 +81,23 @@ class Profile extends Component {
             isEduSaveEnabled:true})
     }
 
+    EditObjective(){
+        this.setState({
+            isObjSaveEnabled :true
+        })
+    }
+
+    EditContactDetails(){
+        this.setState({
+            isContactSaveEnabled:true
+        })
+    }
+
+    EditSkills(){
+        this.setState({
+            isSkillsSaveEnabled:true
+        })
+    }
 
     changeHandler(e, id, name, type) {
         if (type === "education") {
@@ -98,6 +125,18 @@ class Profile extends Component {
             this.setState({
                 studentExperience: studentExper,
                 isExpSaveEnabled: true
+            })
+        }else if (type === "studentObject"){
+            const studObj = this.state.studentObject;
+            console.log('in edit handler')
+            studObj.map((obj)=>{
+                if(obj.student_id ===id ){
+                    obj[name] = e.target.value;
+                    console.log(e.target.value);
+                }
+            })
+            this.setState({
+                studentObject: studObj,
             })
         }
     }
@@ -134,7 +173,7 @@ class Profile extends Component {
                   }
               });
         }else if (type === "education"){
-            console.log('Save Education', this.state.stduentEducation)
+            //console.log('Save Education', this.state.stduentEducation)
 
              axios.put('http://localhost:8080/profile/editEducation/:'+this.state.stduentEducation[0].fk_student_id, this.state.stduentEducation)
               .then((response)=>{
@@ -142,6 +181,21 @@ class Profile extends Component {
                   if(response.status === 200){
                     this.setState({
                         isEduSaveEnabled:false
+                    }
+                    )
+                  }
+              });
+        }else if(type === "studentObject"){
+           // console.log('Save Education', this.state.stduentEducation)
+
+             axios.put('http://localhost:8080/profile/editstudentObject/:'+this.state.studentObject[0].student_id, this.state.studentObject)
+              .then((response)=>{
+                  console.log(response.status)
+                  if(response.status === 200){
+                    this.setState({
+                        isObjSaveEnabled:false,
+                        isContactSaveEnabled:false,
+                        isSkillsSaveEnabled :false
                     }
                     )
                   }
@@ -169,21 +223,43 @@ class Profile extends Component {
         
         let contactDetails =  this.state.studentObject.map(obj => {
             return(
-                <div className = "well" key ={obj.email}>
-					<h3>Contact Details</h3>
+                <div key ={obj.email}>
+				
 					<p style = {{fontWeight: 'bold'}}>Email:</p>
-					<p>{obj.email}</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"email","studentObject")} defaultValue = {obj.email}/>
+                     </div>
 					<p style = {{fontWeight: 'bold'}}>PhoneNo:</p>
-					<p>{obj.phone_no}</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"phone_no","studentObject")} defaultValue = {obj.phone_no}/>
+                     </div>
+                     <p style = {{fontWeight: 'bold'}}>Date Of Birth:</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"dob","studentObject")} defaultValue = {obj.dob}/>
+                     </div>
+                    
 				</div>  
         )
+        })
+
+        let skills = this.state.studentObject.map(obj => {
+            return (
+                <div key = {obj.email}>
+                    <div  className="form-group">
+                        <textarea  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isSkillsSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"skills","studentObject")} defaultValue = {obj.skills}/>
+                     </div>
+                </div>
+            )
         })
         
         let Objective = this.state.studentObject.map(obj=>{
             return(
-                <div key ={obj.objective}>
-					<p> {obj.objective}</p>
-				</div>
+                <div key ={obj.objective} className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isObjSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"objective","studentObject")} defaultValue = {obj.objective}/>
+                </div>
             )
         })
 
@@ -243,14 +319,7 @@ class Profile extends Component {
                         <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"to_date","experience")} defaultValue = {obj.to_date}/>
                         
                     </div>
-                    <hr
-                        style={{
-                         color: '#3333',
-                         backgroundColor:'#3333',
-                         borderRadius:'10px',
-                         height: '3px'
-        }}
-    />
+                    <hr style={{ color: '#3333',backgroundColor:'#3333',borderRadius:'10px', height: '3px' }} />
 				</div>
             )
         })
@@ -269,8 +338,12 @@ class Profile extends Component {
 			<div className="col-sm-8" >
 				
                 <div className="well">
-					<h3>Career Objective</h3>
+					<h3>Career Objective
+                    <button onClick= {this.EditObjective} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
+                    </h3>
 					{Objective}
+                    <button onClick= {(e)=>this.saveHandler("studentObject")} hidden = {!this.state.isObjSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isObjSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
 
                
@@ -280,7 +353,7 @@ class Profile extends Component {
                     <button onClick= {this.EditEducation} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
                     </h3>
         			{educationDetails}
-                    <button onClick= {(e)=>this.saveHandler("Education")} disabled = {!this.state.isEduSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.saveHandler("Education")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px'}}>Save</button>
                     <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
 
@@ -295,9 +368,15 @@ class Profile extends Component {
                     <button onClick= {(e)=>this.saveHandler("Experience")} disabled = {!this.state.isExpSaveEnabled} style = {{width:'75px'}}>Save</button>
                     <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
-
+                <div className = "well">
+                    <h3> Additional Details 
+                    <button onClick= {this.EditContactDetails} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
+                    </h3>
 				{contactDetails}
+                <button onClick= {(e)=>this.saveHandler("studentObject")} hidden = {!this.state.isContactSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isContactSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 			</div>
+            </div>
 			<div className="col-sm-3">
 				
 				<div className="well">
@@ -312,9 +391,12 @@ class Profile extends Component {
             <div className="col-sm-3">
 				
 				<div className="well">
-					<h3>Skills</h3>
-					<p>python, Java</p>
-					<p> My Sql, MongoDb</p>
+					<h3>Skills
+                    <button onClick= {this.EditSkills} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
+                    </h3>
+					{skills}
+                    <button onClick= {(e)=>this.saveHandler("studentObject")} hidden = {!this.state.isSkillsSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isSkillsSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
 
 			</div>

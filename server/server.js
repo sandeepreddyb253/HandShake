@@ -114,29 +114,6 @@ app.post('/registerSubmit', function(request, response) {
 
 });
 
-// async function createRoleUser(userId,email,role,response){
-//     if(role == "student"){
-//         var sql = "INSERT INTO `students`(`first_name`, `last_name`,`fk_user_id`,`email`) VALUES ('firstName','lastName'," + userId + ",'" +email + "')";
-//          connection.query(sql,function(error, results, fields) {
-//                 if(error == null){
-//                     console.log('Student Registered Succesfully ');
-//                 }else{
-//                     console.log(error);
-//                     response.sendFile(path.join(__dirname + '/views/pages/error.html'));
-//                 }
-//         });
-//     }
-//     else if(role == "company"){
-//         var sql = "INSERT INTO `company`(`company_name`, `company_desc`,`fk_user_id`,`email`) VALUES ('firstName','lastName'," + userId + ",'" +email + "')";
-//         connection.query(sql,function(error, results, fields) {
-//                 if(error == null){
-//                     console.log('company Registered Succesfully ');
-//                 }else{
-//                     response.sendFile(path.join(__dirname + '/views/pages/error.html'));
-//                 }
-//         });
-//     }
-// }
 
 app.post('/register', function(request, response) {
 	response.sendFile(path.join(__dirname + '/register.html'));
@@ -227,6 +204,31 @@ app.put('/profile/editExperience/:id', function(request, response) {
      //response.end();
  });
 
+ //editstudentObject
+
+ app.put('/profile/editstudentObject/:id', function(request, response) {
+    if (true) {
+       
+        const studentObjects = request.body;
+        console.log(studentObjects);
+        var student_id = studentObjects[0].student_id;
+        studentObjects.forEach(async obj => {
+            if(obj.student_id){
+            var values  = [obj.email,obj.phone_no, obj.skills,obj.education,obj.objective,student_id]
+            var updateQuery = 'update students set email = ?, phone_no = ?,skills = ?,education=?,objective =? where student_id = ?';
+            results = await getResults(updateQuery,values);
+            console.log(results);
+            }
+        })
+        
+        response.writeHead(200,{
+            'Content-Type' : 'text/plain'
+        })
+        response.end("Successfully Saved");;
+        
+     } 
+     //response.end();
+ });
 
  app.put('/profile/editEducation/:id', function(request, response) {
     if (true) {
@@ -301,7 +303,7 @@ async function renderProfilePage(request,response, studentObject,stduentEducatio
         stduentEducation = await results;
         results = await getResults(studentExpQuery);
         studentExperience = await results;
-        console.log(studentObject.college_name);
+      //  console.log(studentObject.college_name);
         response.json({
             studentObject: (studentObject) ,
             studentExperience :(studentExperience),
