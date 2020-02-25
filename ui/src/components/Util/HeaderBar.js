@@ -33,11 +33,11 @@ class Navbar extends Component {
     render(){
         //if Cookie is set render Logout Button
         let navLogin = null;
-
+        let image = null;
         
         if(cookie.load('cookie')){
             console.log("Able to read cookie", cookie.loadAll('cookie'));
-
+            
            let headers =  this.state.headerArray.map(header => {
                 return(
                     <ul className = "nav navbar-nav" key ={header.tab_name}>
@@ -57,6 +57,12 @@ class Navbar extends Component {
         }else{
             //Else display login button
             console.log("Not Able to read cookie");
+            image = (
+                
+                    <img style = {{width:'100%',height:'100%',marginTop:'-20px'}}src={require('./Handshake.jpg')} />
+                     )
+            
+            console.log({image})
             navLogin = (
                 <ul className="nav navbar-nav navbar-right">
                         <li><Link style = {{color:'white'}} to="/register"><span className="glyphicon glyphicon-tasks"></span> Register</Link></li>
@@ -74,14 +80,16 @@ class Navbar extends Component {
             <nav className="navbar navbar-inverse">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <a className="navbar-brand" href = '#'>Handshake</a>
+                        <a className="navbar-brand" href = '/login'>Handshake</a>
                     </div>
                     
                     {navLogin}
+                    
                 </div>
             </nav>
-            
+            {/* {image} */}
         </div>
+        
         )
     }
 }

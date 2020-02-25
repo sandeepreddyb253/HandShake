@@ -34,6 +34,8 @@ class Profile extends Component {
         this.EditObjective = this.EditObjective.bind(this);
         this.EditContactDetails = this.EditContactDetails.bind(this);
         this.EditSkills = this.EditSkills.bind(this);
+
+        this.deleteHandler = this.deleteHandler.bind(this);
     }  
 
     AddExperience(){
@@ -54,7 +56,7 @@ class Profile extends Component {
     }
     cancelHandler(){
         this.setState(this.initialState)
-        axios.get('http://localhost:8080/profile')
+        axios.get('http://localhost:8080/profile/'+1)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -70,7 +72,44 @@ class Profile extends Component {
             });
         
     }
-    
+    deleteHandler(id,type){
+        if(type === "experience"){
+            const studentExper = this.state.studentExperience;
+            var count =0;
+            studentExper.map((exp) => {
+                if (exp.student_exp_id === id) {
+                    delete studentExper[count];
+                }
+                count++;
+            })
+
+            axios.delete('http://localhost:8080/profile/deleteExperience/'+id)
+                .then((response) => {
+                    this.setState({
+                        studentExperience : studentExper,
+                         isExpSaveEnabled : false
+        })
+        });
+    }else if(type === "education"){
+        const studentEdu = this.state.stduentEducation;
+        var count =0;
+        studentEdu.map((exp) => {
+            if (exp.student_education_id === id) {
+                delete studentEdu[count];
+            }
+            count++;
+        })
+
+        axios.delete('http://localhost:8080/profile/deleteEducation/'+id)
+            .then((response) => {
+                this.setState({
+                    stduentEducation : studentEdu,
+                     isEduSaveEnabled : false
+    })
+    });
+    }
+    }
+
     EditExperience(){
         this.setState({
             isExpSaveEnabled:true})
@@ -205,7 +244,8 @@ class Profile extends Component {
 
     //get the books data from backend  
     componentDidMount(){
-        axios.get('http://localhost:8080/profile')
+        var value = 1
+        axios.get('http://localhost:8080/profile/'+value)
                 .then((response) => {
                 console.log()
                 this.setState({
@@ -282,6 +322,7 @@ class Profile extends Component {
                     <div className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"grad_date","education")} defaultValue = {obj.grad_date}/>
                     </div>
+                    <button onClick= {(e)=>this.deleteHandler(obj.student_education_id,"education")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
                     <hr
                         style={{
                          color: '#3333',
@@ -319,6 +360,7 @@ class Profile extends Component {
                         <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"to_date","experience")} defaultValue = {obj.to_date}/>
                         
                     </div>
+                    <button onClick= {(e)=>this.deleteHandler(obj.student_exp_id,"experience")} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
                     <hr style={{ color: '#3333',backgroundColor:'#3333',borderRadius:'10px', height: '3px' }} />
 				</div>
             )

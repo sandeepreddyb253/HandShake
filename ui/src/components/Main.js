@@ -8,7 +8,9 @@ import Profile from './Profile/Profile'
 // import Create from './Create/Create';
  import HeaderBar from './Util/HeaderBar';
  import Events from './Events/Events';
- import Applications from './Applications/Applications'
+ import Applications from './Applications/Applications';
+ import Students from './Students/Students'
+ import studentprofile from './Students/studentprofile'
 //Create a Main Component
 class Main extends Component {
     render(){
@@ -22,6 +24,8 @@ class Main extends Component {
                 <Route path="/events" component={Events}/>
                 <Route path="/applications" component={Applications}/>
                 <Route path="/register" component={Register}/>
+                <Route path="/students" component={Students}/>
+                <Route path="/studentprofile/:id" component={studentprofile}/>
                 {/*<Route path="/create" component={Create}/> */}
             </div>
         )

@@ -46,7 +46,7 @@ class Applications extends Component {
             <div>
                 {redirectVar}
                 <div className="container">
-                    <h2> Applocations</h2>
+                    <h2> Applications</h2>
                         
                             <div>
                              {details}

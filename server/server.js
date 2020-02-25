@@ -160,13 +160,14 @@ app.get('/events', function(request, response) {
 });
 
 
-app.get('/profile', function(request, response) {
+app.get('/profile/:id', function(request, response) {
    if (true) {
-       
+        var student_id = request.params.id;
+        console.log('===', student_id)
        var studentObject;
        var stduentEducation;
        var studentExperience;
-       renderProfilePage(request,response, studentObject,stduentEducation,studentExperience);
+       renderProfilePage(request,response, studentObject,stduentEducation,studentExperience,student_id);
        
 	} else {
         response.redirect('/');
@@ -174,6 +175,13 @@ app.get('/profile', function(request, response) {
 	//response.end();
 });
 
+
+app.get('/getAllStudents',async function(request,response){
+    var studentsQuery = 'select * from students'
+   // values = [1]
+    results = await getResults(studentsQuery);
+    response.send(results);
+})
 
 app.put('/profile/editExperience/:id', function(request, response) {
     if (true) {
@@ -203,6 +211,22 @@ app.put('/profile/editExperience/:id', function(request, response) {
      } 
      //response.end();
  });
+
+ app.delete('/profile/deleteExperience/:id', async function(request,response){
+    var studentExpId = request.params.id
+    var deleteExpQuery = "delete from student_experience_details where student_exp_id = "+studentExpId;
+    results = await getResults(deleteExpQuery);  
+    response.send(results);
+
+ })
+
+ app.delete('/profile/deleteEducation/:id', async function(request,response){
+    var studentEduId = request.params.id
+    var deleteExpQuery = "delete from student_educational_details where student_education_id = "+studentEduId;
+    results = await getResults(deleteExpQuery);  
+    response.send(results);
+
+ })
 
  //editstudentObject
 
@@ -291,12 +315,14 @@ app.get('/tabHeaders',async function(request,response){
     response.send(tabHeaders);
 });
 
-async function renderProfilePage(request,response, studentObject,stduentEducation,studentExperience){
-         var studentsQuery = 'select * from students where student_id =?'
+async function renderProfilePage(request,response, studentObject,stduentEducation,studentExperience,student_id){
+    console.log('studentId: ',student_id)     
+    var studentsQuery = 'select * from students where student_id ='+student_id
         values = [1]
-        results = await getResults(studentsQuery, values);        
+        console.log('studentId: ',student_id)
+        results = await getResults(studentsQuery);        
         studentObject = await results[0];
-        //console.log(studentObject.college_name);
+        console.log(studentObject);
         var studentsEduQuery = "select * from student_educational_details where fk_student_id = " + studentObject.student_id;
         var studentExpQuery = "select * from student_experience_details where fk_student_id = " + studentObject.student_id;
         results = await getResults(studentsEduQuery);
