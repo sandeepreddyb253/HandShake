@@ -94,11 +94,14 @@ button{
 }
 
 textarea[disabled],
-input[disabled],
 button[disabled]{
   background-color:#3333
 }
 
+input[disabled]{
+    background-color: whitesmoke;
+    border: 0px !important
+}
 .container-fluid{
   background-color: #1569e0;
   border-color: #1569e0;

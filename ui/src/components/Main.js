@@ -11,10 +11,14 @@ import Profile from './Profile/Profile'
  import Applications from './Applications/Applications';
  import Students from './Students/Students'
  import studentprofile from './Students/studentprofile'
+
+import { Provider } from "react-redux";
+import store from "../ReduxModules/store/index";
 //Create a Main Component
 class Main extends Component {
     render(){
         return(
+            <Provider store={store}>
             <div>
                 {/*Render Different Component based on Route*/}
                 <Route  path="/" component={HeaderBar}/> 
@@ -28,6 +32,7 @@ class Main extends Component {
                 <Route path="/studentprofile/:id" component={studentprofile}/>
                 {/*<Route path="/create" component={Create}/> */}
             </div>
+            </Provider>
         )
     }
 }

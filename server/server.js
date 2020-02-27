@@ -193,11 +193,13 @@ app.put('/profile/editExperience/:id', function(request, response) {
         console.log(experiences);
          experiences.forEach(async exp => {
             if(exp.student_exp_id){
-            var values  = [exp.company, exp.postion,exp.work_desc,exp.work_location,exp.from_date,exp.to_date,exp.student_exp_id]
-            var updateQuery = 'update student_experience_details set company = ?, postion = ?, work_desc = ? ,work_location = ?, from_date = ?,to_date = ? where student_exp_id = ?';
+                console.log('updating experience')
+            var values  = [exp.company, exp.postion,exp.work_desc,exp.work_location,exp.student_exp_id]
+            var updateQuery = 'update student_experience_details set company = ?, postion = ?, work_desc = ? ,work_location = ?  where student_exp_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }else{
+                console.log('inserting experince')
                 var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location,from_date,to_date) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location +"','" +exp.from_date +"','" +exp.to_date + "')";
                 results = await getResults(insertQuery,values);
             }
