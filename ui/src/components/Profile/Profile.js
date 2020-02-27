@@ -18,7 +18,8 @@ class Profile extends Component {
             isEduSaveEnabled:false,
             isObjSaveEnabled:false,
             isContactSaveEnabled : false,
-            isSkillsSaveEnabled :false
+            isSkillsSaveEnabled :false,
+            isBasicSaveEnabled: false
         }
         this.state = this.initialState;
         
@@ -36,6 +37,7 @@ class Profile extends Component {
         this.EditObjective = this.EditObjective.bind(this);
         this.EditContactDetails = this.EditContactDetails.bind(this);
         this.EditSkills = this.EditSkills.bind(this);
+        this.EditBasicDetails = this.EditBasicDetails.bind(this)
 
         this.deleteHandler = this.deleteHandler.bind(this);
     }  
@@ -110,6 +112,12 @@ class Profile extends Component {
     EditSkills(){
         this.setState({
             isSkillsSaveEnabled:true
+        })
+    }
+
+    EditBasicDetails(){
+        this.setState({
+            isBasicSaveEnabled:true
         })
     }
 
@@ -189,7 +197,8 @@ class Profile extends Component {
             this.setState({
                 isObjSaveEnabled:false,
                 isContactSaveEnabled:false,
-                isSkillsSaveEnabled :false
+                isSkillsSaveEnabled :false,
+                isBasicSaveEnabled:false
              })
              
         }
@@ -221,12 +230,6 @@ class Profile extends Component {
                     <div  className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"phone_no","studentObject")} defaultValue = {obj.phone_no}/>
                      </div>
-                     <p style = {{fontWeight: 'bold'}}>Date Of Birth:</p>
-					
-                    <div  className="form-group">
-                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"dob","studentObject")} defaultValue = {obj.dob}/>
-                     </div>
-                    
 				</div>  
         )
         })
@@ -250,7 +253,35 @@ class Profile extends Component {
         })
 
 
-
+        let basicDetails = this.props.studentObject?.map(obj=>{
+            return (
+                <div key = {obj.student_id} className = "form-group">
+                    <img style = {{width:'25%'}} src ={require("../Util/Handshake.jpg") }></img> 
+                    
+                    <p style = {{fontWeight: 'bold'}}>First Name:</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"first_name","studentObject")} defaultValue = {obj.first_name}/>
+                     </div>
+                     <p style = {{fontWeight: 'bold'}}>Last Name:</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"last_name","studentObject")} defaultValue = {obj.last_name}/>
+                     </div>
+                    <p style = {{fontWeight: 'bold'}}>City:</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"city","studentObject")} defaultValue = {obj.city}/>
+                     </div>
+                    <p style = {{fontWeight: 'bold'}}>Date Of Birth:</p>
+					
+                    <div  className="form-group">
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"dob","studentObject")} defaultValue = {obj.dob}/>
+                     </div>
+                     
+                </div>
+            )
+        })
         let educationDetails = this.props.stduentEducation?.map(obj=>{
             return(
                 <div key ={obj.college}> 
@@ -355,11 +386,11 @@ class Profile extends Component {
                        <button onClick= {this.EditExperience} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
                     </h3>
 					{expDetails}
-                    <button onClick= {(e)=>this.saveHandler("Experience")} disabled = {!this.state.isExpSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.saveHandler("Experience")} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px'}}>Save</button>
                     <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
                 <div className = "well">
-                    <h3> Additional Details 
+                    <h3> Contact Details 
                     <button onClick= {this.EditContactDetails} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
                     </h3>
 				{contactDetails}
@@ -370,10 +401,10 @@ class Profile extends Component {
 			<div className="col-sm-3">
 				
 				<div className="well">
-					{/* <img src ={require("/profile.jpg")}></img> */}
-					<h3>Sandeep Reddy Bhimireddy</h3>
-					<p>Student at SJSU</p>
-					<p>Masters in Software Engineering</p>
+                <button onClick= {this.EditBasicDetails} style = {{width:'45px',float:'right',height:'20px',fontSize:'12px'}} > Edit</button>
+				 {basicDetails}
+                 <button onClick= {(e)=>this.saveHandler("studentObject")} hidden = {!this.state.isBasicSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isBasicSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 				</div>
 
 			</div>

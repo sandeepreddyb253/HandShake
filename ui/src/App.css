@@ -179,4 +179,8 @@ input[disabled]{
 			cursor: pointer;
 			background-color: #ffffff;
 			
-		}
+    }
+    
+    .profileImage{
+      width:'25%'
+    }

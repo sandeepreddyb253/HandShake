@@ -240,8 +240,8 @@ app.put('/profile/editExperience/:id', function(request, response) {
         var student_id = studentObjects[0].student_id;
         studentObjects.forEach(async obj => {
             if(obj.student_id){
-            var values  = [obj.email,obj.phone_no, obj.skills,obj.education,obj.objective,student_id]
-            var updateQuery = 'update students set email = ?, phone_no = ?,skills = ?,education=?,objective =? where student_id = ?';
+            var values  = [obj.first_name,obj.last_name,obj.city,obj.email,obj.phone_no, obj.skills,obj.education,obj.objective,student_id]
+            var updateQuery = 'update students set first_name =?,last_name = ?,city=?, email = ?, phone_no = ?,skills = ?,education=?,objective =? where student_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }
