@@ -20,7 +20,7 @@ export function saveExperience(payload){
     axios.put('http://localhost:8080/profile/editExperience/:'+ payload[0].student_exp_id , payload)
               .then((response)=> dispatch({
                   type: SAVE_EXPERIENCE,
-                  payload : response.data
+                  payload : response
               }));
               dispatch(fetchProfile(payload[0].fk_student_id))
   }    
@@ -31,7 +31,7 @@ export function saveEducation(payload){
     axios.put('http://localhost:8080/profile/editEducation/:'+payload[0].student_education_id, payload)
               .then((response)=>dispatch({
                 type: SAVE_EDUCATION,
-                payload: response.data
+                payload: response
               }));
               dispatch(fetchProfile(payload[0].fk_student_id))
             }
@@ -45,7 +45,7 @@ export function saveStudentObject(payload){
     axios.put('http://localhost:8080/profile/editstudentObject/:'+payload[0].student_id, payload)
               .then((response)=>dispatch({
                 type: SAVE_STUD_OBJECT,
-                payload : response.data
+                payload : response
               }));
                   
               
@@ -59,7 +59,7 @@ export function deleteExperience(payload){
     axios.delete('http://localhost:8080/profile/deleteExperience/'+payload)
     .then((response) => dispatch({
       type : DELETE_EXPERIENCE, 
-      payload : response.data
+      payload : response
 
     }));
     dispatch(fetchProfile(1))
@@ -73,7 +73,7 @@ export function deleteEducation(payload){
     axios.delete('http://localhost:8080/profile/deleteEducation/'+payload)
     .then((response) => dispatch({
       type : DELETE_EDUCATION, 
-      payload : response.data
+      payload : response
 
     }));
     dispatch(fetchProfile(1))

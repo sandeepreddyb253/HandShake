@@ -1,14 +1,10 @@
-import { SAVE_EXPERIENCE,FETCH_PROFILE, SAVE_EDUCATION, SAVE_STUD_OBJECT} from "../constants/action-types";
+import { SAVE_EXPERIENCE,FETCH_PROFILE, SAVE_EDUCATION, SAVE_STUD_OBJECT,DELETE_EDUCATION,DELETE_EXPERIENCE} from "../constants/action-types";
 
 const initiaState = {
               studentObject : [],
               studentExperience:[],
               stduentEducation:[],
-              isExpSaveEnabled : false,
-              isEduSaveEnabled:false,
-              isObjSaveEnabled:false,
-              isContactSaveEnabled : false,
-              isSkillsSaveEnabled :false
+              saveObjectResponse:[]
   }
 export default function profileReducer(state = initiaState, action){
     switch(action.type){
@@ -22,6 +18,7 @@ export default function profileReducer(state = initiaState, action){
         case SAVE_EDUCATION:
             return {
                 ...state
+
             };
         case SAVE_EXPERIENCE:
             return {
@@ -29,8 +26,17 @@ export default function profileReducer(state = initiaState, action){
             };
         case SAVE_STUD_OBJECT:
             return{
-                ...state
+                ...state,
+                payload: action.payload
             };
+        case DELETE_EDUCATION:
+                return{
+                    ...state
+                };
+        case DELETE_EXPERIENCE:
+                    return{
+                        ...state      
+                    };
 
         default:
             return state;

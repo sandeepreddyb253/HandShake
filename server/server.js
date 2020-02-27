@@ -200,7 +200,7 @@ app.put('/profile/editExperience/:id', function(request, response) {
             console.log(results);
             }else{
                 console.log('inserting experince')
-                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location,from_date,to_date) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location +"','" +exp.from_date +"','" +exp.to_date + "')";
+                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location + "')";
                 results = await getResults(insertQuery,values);
             }
         })
