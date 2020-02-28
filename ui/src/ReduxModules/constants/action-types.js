@@ -9,3 +9,7 @@ export const FETCH_PROFILE = "FETCH_PROFILE";
 export const DELETE_EDUCATION = "DELETE_EDUCATION";
 
 export const DELETE_EXPERIENCE = "DELETE_EXPERIENCE";
+
+export const LOGIN = "LOGIN";
+
+export const REGISTER = "REGISTER";

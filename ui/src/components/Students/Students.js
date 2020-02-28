@@ -11,10 +11,25 @@ class Students extends Component {
         super();
         this.state = {  
             students : [],
-            redirect:''
+            redirect:'',
+            collegeSearch:'',
+            nameSearch:''
         }
         this.viewProfile = this.viewProfile.bind(this)
+        this.changeHandler = this.changeHandler.bind(this)
     }  
+
+    changeHandler(e,type){
+        if(type === "college"){
+            this.setState({
+                collegeSearch: e.target.value
+            })
+        }else if (type === "name"){
+            this.setState({
+                nameSearch: e.target.value
+            })
+        }
+    }
     //get the books data from backend  
     componentDidMount(){
         axios.get('http://localhost:8080/getAllStudents')
@@ -35,12 +50,12 @@ class Students extends Component {
         if (this.state.redirect) {
             return <Redirect to={this.state.redirect} />;
             }
-        console.log(this.state.students)
+       // console.log(this.state.students)
         //iterate over books to create a table row
         let details = this.state.students.map(student => {
             return(
                 <div className="row" key = {student.student_id}>	
-				<div className="well" style ={{height:'175px',width:'70%'}}>
+				<div className="well" style ={{height:'175px',width:'80%'}}>
             <h3>{student.first_name}, {student.last_name}</h3>
                         <p><span style = {{fontWeight:'bold'}}>Objective: </span>{student.objective}</p> 
                         <p> <span style = {{fontWeight:'bold'}}>College: </span>   {student.college_name} 
@@ -56,15 +71,29 @@ class Students extends Component {
             redirectVar = <Redirect to= "/login"/>
         }
         return(
-            <div>
+            <div style ={{marginLeft:'50px'}}>
                 {redirectVar}
-                <div className="container">
+                
+			    <div className="col-sm-8" >
                     <h2>List of All Students</h2>
                         
                             <div>
                              {details}
                             </div>
-                </div> 
+               
+                </div>
+                <div className="col-sm-3" style ={{marginTop:'60px'}}>
+				
+				<div className="well">
+					<h3>Search
+                    </h3>
+					<div  className="form-group" >
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" onChange = {(e)=>this.changeHandler(e,"college")} placeholder = "College Name" />
+                        <p></p>
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" onChange = {(e)=>this.changeHandler(e,"name")} placeholder = "Student Name"/>
+                     </div>
+            	</div>
+                </div>
             </div> 
         )
     }

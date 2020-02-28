@@ -1,5 +1,6 @@
-import { SAVE_EXPERIENCE,FETCH_PROFILE, SAVE_STUD_OBJECT, SAVE_EDUCATION, DELETE_EDUCATION, DELETE_EXPERIENCE} from "../constants/action-types";
-import axios from 'axios'
+import { SAVE_EXPERIENCE,FETCH_PROFILE, SAVE_STUD_OBJECT, SAVE_EDUCATION, DELETE_EDUCATION, DELETE_EXPERIENCE,LOGIN,REGISTER} from "../constants/action-types";
+import axios from 'axios';
+import cookie from 'react-cookies';
 
 export function fetchProfile(payload) {
   console.log("dispatching the action")
@@ -62,7 +63,7 @@ export function deleteExperience(payload){
       payload : response
 
     }));
-    dispatch(fetchProfile(1))
+    dispatch(fetchProfile(cookie.load('cookie')))
   }
   
 }
@@ -76,7 +77,36 @@ export function deleteEducation(payload){
       payload : response
 
     }));
-    dispatch(fetchProfile(1))
+    dispatch(fetchProfile(cookie.load('cookie')))
+  }
+
+}
+
+export function auth(payload){
+
+  return async function(dispatch){
+   await axios.post('http://localhost:8080/auth',payload)
+    .then((response) => dispatch({
+      type : LOGIN, 
+      payload : response
+
+    }));
+    //dispatch(fetchProfile(1))
+  }
+
+}
+
+
+export  function register(payload){
+
+  return async function(dispatch){
+    await axios.post('http://localhost:8080/register',payload)
+    .then((response) =>  dispatch({
+      type : REGISTER, 
+      payload : response
+
+    }));
+    //dispatch(fetchProfile(1))
   }
 
 }

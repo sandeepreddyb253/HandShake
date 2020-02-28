@@ -36,7 +36,7 @@ class Navbar extends Component {
         let image = null;
         
         if(cookie.load('cookie')){
-            console.log("Able to read cookie", cookie.loadAll('cookie'));
+            console.log("Able to read cookie", cookie.load('cookie'));
             
            let headers =  this.state.headerArray.map(header => {
                 return(
@@ -80,7 +80,7 @@ class Navbar extends Component {
             <nav className="navbar navbar-inverse">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <a className="navbar-brand" href = '/login'>Handshake</a>
+                        <a className="navbar-brand" href = '/home'>Handshake</a>
                     </div>
                     
                     {navLogin}

@@ -53,6 +53,27 @@ class Profile extends Component {
         )
         })
 
+        let basicDetails = this.state.studentObject.map(obj=>{
+            return (
+                <div key = {obj.student_id} >
+                    <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg") }></img> 
+                    
+                    <p style = {{fontWeight: 'bold'}}>First Name:</p>
+                    <p>{obj.first_name}</p>
+                    
+                     <p style = {{fontWeight: 'bold'}}>Last Name:</p>
+                     <p>{obj.last_name}</p>
+                
+                    <p style = {{fontWeight: 'bold'}}>City:</p>
+					<p>{obj.city}</p>
+                    
+                    <p style = {{fontWeight: 'bold'}}>Date Of Birth:</p>
+					<p>{obj.dob}</p>
+                     
+                </div>
+            )
+        })
+
         let skills = this.state.studentObject.map(obj => {
             return (
             <div key ={obj.email}>
@@ -158,9 +179,8 @@ class Profile extends Component {
 				
 				<div className="well">
 					{/* <img src ={require("/profile.jpg")}></img> */}
-					<h3>Sandeep Reddy Bhimireddy</h3>
-					<p>Student at SJSU</p>
-					<p>Masters in Software Engineering</p>
+					<h3>Basic Details</h3>
+					{basicDetails}
 				</div>
 
 			</div>

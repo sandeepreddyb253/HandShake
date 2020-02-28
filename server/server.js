@@ -11,7 +11,8 @@ var connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
 	password : 'Demo@123',
-	database : 'handshake'
+    database : 'handshake',
+    dateStrings:true
 });
 const getResults = util.promisify(connection.query).bind(connection);
 
@@ -31,20 +32,27 @@ app.use(bodyParser.json());
 // 	response.redirect('/home');
 // });
 
-app.post('/auth', function(request, response) {
+app.post('/auth', async function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
 	if (username && password) {
-	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? AND `password` = ?', [username, password], function(error, results) {
+	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? AND `password` = ?', [username, password],async function(error, results) {
            //console.log(error);
 			if (results.length == 1) {
-                request.session.loggedin = true;
-                var  userdetailsCookie={
-                    loggedin :true,
-                    username: username,
-                    role : results[0].role_name
+                var id;
+                console.log(results[0].role_name)
+                if(results[0].role_name ==='student'){
+                    
+                    var sqlQuery = 'select * from students where fk_user_id = '+results[0].user_id;
+                    var results = await getResults(sqlQuery);
+                    console.log('student coookie id:', results)
+                    id = results[0].student_id
+                }else if(results[0].role_name ==='company'){
+                    var sqlQuery = 'select * from company where fk_user_id = '+results[0].user_id;
+                    var results = await getResults(sqlQuery);
+                    id = results[0].company_id
                 }
-                response.cookie('cookie',userdetailsCookie,{maxAge: 900000, httpOnly: false, path : '/'});
+                response.cookie('cookie',id,{maxAge: 900000, httpOnly: false, path : '/'});
                response.writeHead(200,{
                     'Content-Type' : 'text/plain'
                 })
@@ -60,64 +68,41 @@ app.post('/auth', function(request, response) {
 	}
 });
 
-app.post('/registerSubmit', function(request, response) {
-    var username = request.body.username;
+
+
+
+app.post('/register', async function(request, response) {
+	var username = request.body.username;
     var email = request.body.email;
     var password = request.body.password;
     var role = request.body.role;
+    var firstName = request.body.firstName;
+    var lastName = request.body.lastName
     var bool = false;
     if (username && password) {
-        var sql = "INSERT INTO `lu_user`(`user_name`, `email`,`password`) VALUES ('" + username + "','" + email + "','" +password + "')";
-        var values = [username,email,password];
+        var sql = "INSERT INTO `lu_user`(`user_name`, `email`,`password`,`role_name`) VALUES ('" + username + "','" + email + "','" +password +"','"+ role + "')";
+        var values = [username,email,password,role];
         console.log(values);
-	    connection.query(sql,function(error, results, fields) {
-           // console.log(error);
-            if (error == null) {
-                console.log('User Registered Succesfully ', results.affectedRows);
-                var userId = results.insertId;
-                if(role == "student"){
-                    var sql = "INSERT INTO `students`(`first_name`, `last_name`,`fk_user_id`,`email`) VALUES ('firstName','lastName'," + userId + ",'" +email + "')";
-                     connection.query(sql,function(error, results, fields) {
-                            if(error == null){
-                                console.log('Student Registered Succesfully ');
-                            }else{
-                                console.log(error);
-                                bool= true;
-                                response.redirect('/error');
-                            }
-                    });
-                }
-                if(role == "company"){
-                    var sql = "INSERT INTO `company`(`company_name`, `company_desc`,`fk_user_id`,`email`) VALUES ('firstName','lastName'," + userId + ",'" +email + "')";
-                    connection.query(sql,function(error, results, fields) {
-                            if(error == null){
-                                console.log('company Registered Succesfully ');
-                            }else{
-                                console.log(error);
-                                bool= true;
-                                response.redirect('/error');
-                            }
-                    });
-                }
-                if(!bool){
-                    response.redirect('/');
-                }
-            } else {
-                response.redirect('/error');
-			}			
+       var results = await getResults(sql);
+	    var userId = results.insertId;
+        if(role == "student"){
+                    var sql = "INSERT INTO `students`(`first_name`, `last_name`,`fk_user_id`,`email`) VALUES ('"+firstName+"','"+lastName+"'," + userId + ",'" +email + "')";
+                    var results = await getResults(sql);
+        }
+        if(role == "company"){
+                    var sql = "INSERT INTO `company`(`company_name`, `company_desc`,`fk_user_id`,`email`) VALUES ('"+firstName+"','"+lastName+"',"+ userId + ",'" +email + "')";
+                    var results = await getResults(sql)
+        }
+        
+					
 			//response.end();
-		});
-	} else {
-		response.send('Please enter Username and Password!');
-		response.end();
-	}
+        }
+        response.writeHead(200,{
+            'Content-Type' : 'text/plain'
+            })  
+         response.end("succesfully saved");
+    } );
 
-});
-
-
-app.post('/register', function(request, response) {
-	response.sendFile(path.join(__dirname + '/register.html'));
-});
 
 
 app.post('/saveApplication',async function(request,response){
@@ -324,7 +309,7 @@ async function renderProfilePage(request,response, studentObject,stduentEducatio
         console.log('studentId: ',student_id)
         results = await getResults(studentsQuery);        
         studentObject = await results[0];
-        console.log(studentObject);
+        console.log(studentObject.dob);
         var studentsEduQuery = "select * from student_educational_details where fk_student_id = " + studentObject.student_id;
         var studentExpQuery = "select * from student_experience_details where fk_student_id = " + studentObject.student_id;
         results = await getResults(studentsEduQuery);

@@ -45,7 +45,7 @@ class Home extends Component {
 
     render(){
         
-        console.log(this.state.jobs)
+        //console.log(this.state.jobs)
         //iterate over books to create a table row
         let details = this.state.jobs.map(job => {
             return(

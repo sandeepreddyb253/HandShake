@@ -3,6 +3,8 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import {auth} from '../../ReduxModules/actions/index';
+import {connect} from 'react-redux';
 
 //Define a Login Component
 class Login extends Component{
@@ -40,7 +42,7 @@ class Login extends Component{
         })
     }
     //submit Login handler to send a request to the node backend
-    submitLogin = (e) => {
+     async  submitLogin(e) {
        // var headers = new Headers();
         //prevent page from refresh
         e.preventDefault();
@@ -51,10 +53,9 @@ class Login extends Component{
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:8080/auth',data)
-            .then(response => {
-                console.log("Status Code : ",response.status);
-                if(response.status === 200){
+       var   loginData = await this.props?.auth(data);
+        console.log(this.props, loginData);
+        if(this.props?.loginData.status === 200){
                     this.setState({
                         authFlag : true
                     })
@@ -63,7 +64,7 @@ class Login extends Component{
                         authFlag : false
                     })
                 }
-            });
+
     }
 
     render(){
@@ -97,5 +98,9 @@ class Login extends Component{
         )
     }
 }
-//export Login Component
-export default Login;
+
+const mapStateToProps = state => ({
+    loginData : state.login.loginData,
+      });
+
+export default connect (mapStateToProps,{auth})(Login);

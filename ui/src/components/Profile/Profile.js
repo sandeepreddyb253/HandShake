@@ -54,16 +54,16 @@ class Profile extends Component {
         })
     }
     cancelHandler(){
-        this.props.fetchProfile(1);
+        this.props.fetchProfile(cookie.load('cookie'));
         this.setState(this.initialState)
         
         
     }
-    deleteHandler(id,type){
+   async deleteHandler(id,type){
         if(type === "Experience"){
             
             var  payload = id
-            var response =  this.props.deleteExperience(payload)
+            var response = await this.props.deleteExperience(payload)
            // console.log(response)
             this.setState({
                             isExpSaveEnabled:false
@@ -72,13 +72,13 @@ class Profile extends Component {
        
 
         var  payload = id
-            var response =  this.props.deleteEducation(payload)
+            var response = await this.props.deleteEducation(payload)
            // console.log(response)
             this.setState({
                             isEduSaveEnabled:false
                         })
     }else if(type ==="newExperience" || type ==="newEducation"){
-        this.props.fetchProfile(1);
+      await  this.props.fetchProfile(cookie.load('cookie'));
         this.setState(this.initialState)
     }
     }
@@ -148,7 +148,7 @@ class Profile extends Component {
         }else if(type === "newEducation"){
             const studentEducation = this.state.newStudentEducation;
             studentEducation[name]= e.target.value;
-            studentEducation.fk_student_id = this.props?.studentObject.student_id;
+            studentEducation.fk_student_id = this.props?.studentObject[0].student_id;
             console.log(this.state.newStudentEducation)
             this.setState({
                 newStudentEducation:studentEducation
@@ -156,8 +156,8 @@ class Profile extends Component {
         }else if(type ==="newExperience"){
             const studentExp = this.state.newStudentExperience;
             studentExp[name]= e.target.value;
-            studentExp.fk_student_id = this.props?.studentObject.student_id;
-            console.log(this.state.newStudentExperience)
+            studentExp.fk_student_id = this.props?.studentObject[0].student_id;
+            console.log(this.props?.studentObject[0].student_id)
             this.setState({
                 newStudentExperience:studentExp
             })
@@ -177,7 +177,7 @@ class Profile extends Component {
     
     
 
-    saveHandler(type){
+    async saveHandler(type){
         console.log("in save:::",type )
         if (type === "Experience") {
             console.log('Save these ', this.state.studentExperience)
@@ -196,14 +196,14 @@ class Profile extends Component {
                 payload = payload.concat(newStudentExperience);
                 console.log('edited payload', payload);
             }
-            var response = this.props.saveExperience(payload)
+            var response = await this.props.saveExperience(payload)
             console.log(response)
             this.setState({
                 isExpSaveEnabled: false
             })
 
         }else if (type === "Education"){
-            var payload = this.props?.stduentEducation
+            var payload = await this.props?.stduentEducation
             console.log('initial Payload Education', payload)
             var newStudentEducation = {
                 college:this.state.newStudentEducation.college,
@@ -217,7 +217,7 @@ class Profile extends Component {
             console.log('edited payload',payload);
             }
            
-            var response = this.props.saveEducation(payload)
+            var response = await this.props.saveEducation(payload)
             this.setState({
                         isEduSaveEnabled:false,
                         isEduAddEnabled:false
@@ -228,7 +228,7 @@ class Profile extends Component {
 
            var payload = this.props?.studentObject
            console.log('payload in studentObject',payload)
-            var response = this.props.saveStudentObject(payload)
+            var response = await this.props.saveStudentObject(payload)
             console.log('response in studentObject',response)
             this.setState({
                 isObjSaveEnabled:false,
@@ -241,10 +241,10 @@ class Profile extends Component {
     }
 
     //get the books data from backend  
-    componentDidMount(){
-        var value = 1
+    async componentDidMount(){
+        var value = cookie.load('cookie')
 
-        this.props.fetchProfile(value);
+        await this.props.fetchProfile(value);
             
     }
 
@@ -312,7 +312,7 @@ class Profile extends Component {
                     <p style = {{fontWeight: 'bold'}}>Date Of Birth:</p>
 					
                     <div  className="form-group">
-                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"dob","studentObject")} defaultValue = {obj.dob}/>
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "date" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"dob","studentObject")} defaultValue = {obj.dob}/>
                      </div>
                      
                 </div>
@@ -335,7 +335,7 @@ class Profile extends Component {
             <p style ={{fontWeight: 'bold'}}>Expected graduation Date:</p>
             
             <div className="form-group">
-                <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"grad_date","newEducation")} defaultValue = ''/>
+                <input  style ={{width:'90%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"grad_date","newEducation")} defaultValue = ''/>
             </div>
             <button onClick= {(e)=>this.deleteHandler(undefined,"newEducation")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
             <hr
@@ -363,7 +363,7 @@ class Profile extends Component {
 					<p style ={{fontWeight: 'bold'}}>Expected graduation Date:</p>
 					
                     <div className="form-group">
-                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"grad_date","education")} defaultValue = {obj.grad_date}/>
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"grad_date","education")} defaultValue = {obj.grad_date}/>
                     </div>
                     <button onClick= {(e)=>this.deleteHandler(obj.student_education_id,"Education")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
                     <hr
@@ -400,9 +400,9 @@ class Profile extends Component {
                     <p style ={{fontWeight: 'bold'}}><span style={{marginRight:'210px'}}>Location:</span> <span style={{marginRight:'190px'}}> Start Date:</span>     <span>    End Date:</span></p>
                         <input  style ={{width:'30%',borderRadius:'7px'}} type = "text" disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,undefined,"work_location","newExperience")} defaultValue = ''/>
 
-                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,undefined,"from_date","newExperience")} defaultValue = ''/>
+                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "date"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,undefined,"from_date","newExperience")} defaultValue = ''/>
 
-                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,undefined,"to_date","newExperience")} defaultValue = ''/>
+                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "date"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,undefined,"to_date","newExperience")} defaultValue = ''/>
                         
                     </div>
                     <button onClick= {(e)=>this.deleteHandler(undefined,"newExperience")} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
@@ -433,9 +433,9 @@ class Profile extends Component {
                     <p style ={{fontWeight: 'bold'}}><span style={{marginRight:'210px'}}>Location:</span> <span style={{marginRight:'190px'}}> Start Date:</span>     <span>    End Date:</span></p>
                         <input  style ={{width:'30%',borderRadius:'7px'}} type = "text" disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"work_location","experience")} defaultValue = {obj.work_location}/>
 
-                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"from_date","experience")} defaultValue = {obj.from_date}/>
+                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "date"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"from_date","experience")} defaultValue = {obj.from_date}/>
 
-                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "text"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"to_date","experience")} defaultValue = {obj.to_date}/>
+                        <input  style ={{width:'30%',borderRadius:'7px'}} type = "date"  disabled={!this.state.isExpSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_exp_id,"to_date","experience")} defaultValue = {obj.to_date}/>
                         
                     </div>
                     <button onClick= {(e)=>this.deleteHandler(obj.student_exp_id,"Experience")} hidden = {!this.state.isExpSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
