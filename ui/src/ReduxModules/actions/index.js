@@ -16,9 +16,9 @@ export function fetchProfile(payload) {
 
 
 export function saveExperience(payload){
-  return function(dispatch){
+  return async function(dispatch){
     console.log('payload::', payload);
-    axios.put('http://localhost:8080/profile/editExperience/:'+ payload[0].student_exp_id , payload)
+   await axios.put('http://localhost:8080/profile/editExperience/:'+ payload[0].student_exp_id , payload)
               .then((response)=> dispatch({
                   type: SAVE_EXPERIENCE,
                   payload : response
@@ -63,7 +63,7 @@ export function deleteExperience(payload){
       payload : response
 
     }));
-    dispatch(fetchProfile(cookie.load('cookie')))
+    dispatch(fetchProfile(cookie.load('cookie').split(':')[1]))
   }
   
 }
@@ -77,7 +77,7 @@ export function deleteEducation(payload){
       payload : response
 
     }));
-    dispatch(fetchProfile(cookie.load('cookie')))
+    dispatch(fetchProfile(cookie.load('cookie').split(':')[1]))
   }
 
 }

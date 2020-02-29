@@ -8,31 +8,33 @@ class Applications extends Component {
     constructor(){
         super();
         this.state = {  
-            events : []
+            applications : []
         }
     }  
     //get the books data from backend  
     componentDidMount(){
-        axios.get('http://localhost:8080/events')
+        var data = 1;
+        axios.get('http://localhost:8080/applications/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
-                    events : this.state.events.concat(response.data) 
+                    applications : this.state.applications.concat(response.data) 
                 });
             });
     }
 
     render(){
         
-        console.log(this.state.jobs)
+       // console.log(this.state.jobs)
         //iterate over books to create a table row
-        let details = this.state.events.map(event => {
+        let details = this.state.applications.map(application => {
             return(
-                <div className="row" key = {event.event_name}>	
+                <div className="row" key = {application.map_application_id}>	
 				<div className="well">
-						<h3>{event.event_desc}</h3>
-						<p> {event.event_time}, {event.location} </p>
-                        <p>pending</p>
+						<h3>{application.postion}CEO</h3>
+						<p> {application.job_desc} CEO of Apple, {application.job_location} San Jose</p>
+                        <p> {application.company_name} Apple Inc., || Applied: {application.application_date} </p>
+                     <p><span className = "glyphicon glyphicon-info-sign"></span>Status: {application.status}</p>
 				</div>
 		        </div>    
         )

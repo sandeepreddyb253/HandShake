@@ -20,7 +20,10 @@ class Navbar extends Component {
     }
 
     componentDidMount(){
-        axios.get('http://localhost:8080/tabHeaders')
+        if(cookie.load('cookie')){
+        var data = cookie.load('cookie').split(':')[0]
+        }
+        axios.get('http://localhost:8080/tabHeaders/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -36,7 +39,7 @@ class Navbar extends Component {
         let image = null;
         
         if(cookie.load('cookie')){
-            console.log("Able to read cookie", cookie.load('cookie'));
+            console.log("Able to read cookie", cookie.load('cookie').split(':')[0]);
             
            let headers =  this.state.headerArray.map(header => {
                 return(

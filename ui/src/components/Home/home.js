@@ -16,7 +16,8 @@ class Home extends Component {
     }  
     //get the books data from backend  
     componentDidMount(){
-        axios.get('http://localhost:8080/home')
+        var data = '1'
+        axios.get('http://localhost:8080/home/'+ data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -49,18 +50,24 @@ class Home extends Component {
         //iterate over books to create a table row
         let details = this.state.jobs.map(job => {
             return(
-                <div className="row" key = {job.postion}>	
-				<div className="well" style ={{height:'175px',width:'50%'}}>
+                <div className="row" key = {job.postion}>
+                <div className = "well" style = {{height:'175px',width:'60%'}}>
+				<div className="col-sm-8" style ={{width:'80%'}}>
 						<h3>{job.postion}</h3>
                         <p> {job.job_desc}, {job.job_location} </p>
-                        <button  style = {{float :'left',width :'50px',height:'30px'}} onClick = {(e)=>this.saveApplication(job.job_id)}> Apply</button>
-                        <Popup trigger={<a style = {{float:'right'}}> Show Description </a>}
+                         <button  style = {{float :'left',width :'65px',height:'30px'}} disabled = {job.disable} onClick = {(e)=>this.saveApplication(job.job_id)}> {job.status}</button>
+                        
+				</div>
+                <div className = "col-sm-3" style ={{width:'20%'}}>
+                <img style = {{width:'100%',marginTop:'20px',marginBottom:'20px'}} src ={require("../Util/Handshake.jpg") }></img> 
+                <Popup trigger={<a style = {{marginTop:'20px',align:'center'}}>Description </a>}
                          modal
                     closeOnDocumentClick>
             <div> {job.job_long_desc} </div>
                 </Popup>
-				</div>
-		        </div>    
+                </div>
+		        </div> 
+                </div>  
         )
         })
         //if not logged in go to login page

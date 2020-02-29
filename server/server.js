@@ -40,6 +40,7 @@ app.post('/auth', async function(request, response) {
            //console.log(error);
 			if (results.length == 1) {
                 var id;
+                var role = results[0].role_name
                 console.log(results[0].role_name)
                 if(results[0].role_name ==='student'){
                     
@@ -52,6 +53,7 @@ app.post('/auth', async function(request, response) {
                     var results = await getResults(sqlQuery);
                     id = results[0].company_id
                 }
+                id = role+':'+id
                 response.cookie('cookie',id,{maxAge: 900000, httpOnly: false, path : '/'});
                response.writeHead(200,{
                     'Content-Type' : 'text/plain'
@@ -120,11 +122,12 @@ app.post('/saveApplication',async function(request,response){
 
 })
 
-app.get('/home', function(request, response) {
+app.get('/home/:id', async function(request, response) {
 	if (true) {
+        var data = request.params.id;
         var jobPostings;
         console.log("request in Home page")
-        renderHomePage(request, response,jobPostings)
+       await  renderHomePage(request, response,jobPostings,data)
         
 	} else {
         response.redirect('/');
@@ -144,6 +147,16 @@ app.get('/events', function(request, response) {
 	//response.end();
 });
 
+app.get('/applications/:id', async function(request, response) {
+	if (true) {
+        var data = request.params.id;
+        await renderApplicationsData(request, response,data)
+        
+	} else {
+        response.redirect('/');
+	}
+	
+});
 
 app.get('/profile/:id', function(request, response) {
    if (true) {
@@ -285,10 +298,13 @@ app.get('/error',function(rqst,response){
 app.listen(8080);
 
 
-app.get('/tabHeaders',async function(request,response){
+app.get('/tabHeaders/:id',async function(request,response){
 
-    var tabHeadersQuery = "select * from map_role_tab ";
-    results = await getResults(tabHeadersQuery);  
+    var data = request.params.id;
+    console.log('data',data);
+    values =[data]
+    var tabHeadersQuery = "select * from map_role_tab where role_name = ?"
+    results = await getResults(tabHeadersQuery,values);  
     //console.log(results[1].job_desc);
     tabHeaders= await results;
     // var result = [];
@@ -298,7 +314,7 @@ app.get('/tabHeaders',async function(request,response){
     //     }
 
     // })
-    // console.log(result);
+    //console.log(results);
     response.send(tabHeaders);
 });
 
@@ -324,11 +340,30 @@ async function renderProfilePage(request,response, studentObject,stduentEducatio
         });
 }
 
-async function renderHomePage(request,response,jobPostings){
-   var responseObject ;
+async function renderHomePage(request,response,jobPostings,data){
+  // var student_id = data;
     var jobPostingsQuery = "select * from job_postings ";
+    var values = [data]
+    console.log('dataaa:',data)
+    var applicationsQuery = 'select * from map_student_job where fk_student_id = ?';
     results = await getResults(jobPostingsQuery);  
-    //console.log(results[1].job_desc);
+    studentApplications = await getResults(applicationsQuery,values);
+    console.log('All Job Applications::',studentApplications)
+    job_ids = []
+    await studentApplications.forEach(async obj=>{
+       await job_ids.push(obj.fk_job_id)
+       console.log('Jaffa')
+    })
+    console.log('jobIds:::',job_ids)
+    results.forEach(async obj => {
+        if(job_ids.includes(obj.job_id)){
+            obj.status = 'Applied';
+            obj.disable = true
+        }else{
+            obj.status = 'Apply';
+            obj.disable = false
+        }
+    })
     jobPostings= await results;
     response.send(jobPostings);
 }
@@ -342,5 +377,29 @@ async function renderEventsPage(request,response,events){
 	response.send(events)
 }
 
+
+async function renderApplicationsData(request,response,data){
+    var values = [data]
+    var applicationsQuery = 'select * from map_student_job where fk_student_id = ?';
+    studentApplications = await getResults(applicationsQuery,values);
+
+    await studentApplications.forEach(async app=>{
+        var jobQuery = 'select * from job_postings where job_id = ?'
+        var jobValues = [app.fk_job_id];
+        job = await getResults(jobQuery,jobValues);
+        console.log('jobs:',job[0].postion)
+        app.postion =  job[0].postion;
+        app.job_desc =  job[0].job_desc;
+        app.job_location =  job[0].job_location
+        var companyQuery = 'select * from company where company_id = ?'
+        var companyValues = [job[0].fk_company_id];
+        company = await getResults(companyQuery,companyValues);
+        app.company_name =  company[0].company_name;
+        console.log('apppp:',app)
+    })
+    results = await studentApplications
+    console.log('modified result:',results);
+    response.send(results);
+}
 
 

@@ -54,7 +54,7 @@ class Profile extends Component {
         })
     }
     cancelHandler(){
-        this.props.fetchProfile(cookie.load('cookie'));
+        this.props.fetchProfile(cookie.load('cookie').split(':')[1]);
         this.setState(this.initialState)
         
         
@@ -78,7 +78,7 @@ class Profile extends Component {
                             isEduSaveEnabled:false
                         })
     }else if(type ==="newExperience" || type ==="newEducation"){
-      await  this.props.fetchProfile(cookie.load('cookie'));
+      await  this.props.fetchProfile(cookie.load('cookie').split(':')[1]);
         this.setState(this.initialState)
     }
     }
@@ -197,9 +197,11 @@ class Profile extends Component {
                 console.log('edited payload', payload);
             }
             var response = await this.props.saveExperience(payload)
-            console.log(response)
+            console.log('props now::',this.props?.studentExperience)
+            this.setState(this.initialState);
             this.setState({
-                isExpSaveEnabled: false
+                isExpSaveEnabled: false,
+                isExpAddEnabled : false
             })
 
         }else if (type === "Education"){
@@ -242,7 +244,7 @@ class Profile extends Component {
 
     //get the books data from backend  
     async componentDidMount(){
-        var value = cookie.load('cookie')
+        var value = cookie.load('cookie').split(':')[1]
 
         await this.props.fetchProfile(value);
             
@@ -381,6 +383,7 @@ class Profile extends Component {
 
         let expForm = null;
         if(this.state.isExpAddEnabled){
+           // console.log('Jafffafff')
            expForm = (
                <div>
                     <p style ={{fontWeight: 'bold'}}>Company:</p>
@@ -413,7 +416,7 @@ class Profile extends Component {
 
         
         let expDetails = this.props.studentExperience?.map(obj=>{
-           // console.log('student Experience:' ,this.props.studentExperience)
+            console.log('student Experience:' ,this.props.studentExperience)
             return(
                <div  key = {obj.company}>
 					<p style ={{fontWeight: 'bold'}}>Company:</p>
