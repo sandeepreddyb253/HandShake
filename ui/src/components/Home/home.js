@@ -16,7 +16,8 @@ class Home extends Component {
     }  
     //get the books data from backend  
     componentDidMount(){
-        var data = '1'
+        if(cookie.load('cookie')){
+        var data = cookie.load('cookie').split(':')[1]
         axios.get('http://localhost:8080/home/'+ data)
                 .then((response) => {
                 //update the state with the response data
@@ -24,12 +25,13 @@ class Home extends Component {
                     jobs : this.state.jobs.concat(response.data) 
                 });
             });
+        }
     }
 
     saveApplication(job_id){
         const data = {
          jobId : job_id,
-         studentId : 1
+         studentId : cookie.load('cookie').split(':')[1]
         }
 
         axios.post('http://localhost:8080/saveApplication',data)
@@ -63,7 +65,15 @@ class Home extends Component {
                 <Popup trigger={<a style = {{marginTop:'20px',align:'center'}}>Description </a>}
                          modal
                     closeOnDocumentClick>
-            <div> {job.job_long_desc} </div>
+                <div> <h2>Job Description</h2>
+                   <p> {job.job_long_desc}</p>
+                   <p>{job.job_long_desc2}</p>
+                   <p>{job.job_long_dec3}</p>
+                   <p style = {{fontWeight:'bold'}}>Skills Required:</p>
+                    <p>{job.skills_required}</p>
+                    <p style = {{fontWeight:'bold'}}>Deadline: </p>
+                    <p>{job.deadline}</p>
+                </div>
                 </Popup>
                 </div>
 		        </div> 

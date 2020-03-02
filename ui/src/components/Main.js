@@ -10,7 +10,8 @@ import Profile from './Profile/Profile'
  import Events from './Events/Events';
  import Applications from './Applications/Applications';
  import Students from './Students/Students'
- import studentprofile from './Students/studentprofile'
+ import studentprofile from './Students/studentprofile';
+ import companyHome from './Home/companyHome'
 
 import { Provider } from "react-redux";
 import store from "../ReduxModules/store/index";
@@ -30,6 +31,7 @@ class Main extends Component {
                 <Route path="/register" component={Register}/>
                 <Route path="/students" component={Students}/>
                 <Route path="/studentprofile/:id" component={studentprofile}/>
+                <Route path = "/companyHome" component = {companyHome}/>
                 {/*<Route path="/create" component={Create}/> */}
             </div>
             </Provider>

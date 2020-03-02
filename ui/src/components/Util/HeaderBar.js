@@ -11,27 +11,28 @@ class Navbar extends Component {
         super(props);
         this.handleLogout = this.handleLogout.bind(this);
         this.state = {
-            headerArray : []
+            headerArray : [],
+            firstTime: true
         }
     }
     //handle logout to destroy the cookie
     handleLogout = () => {
         cookie.remove('cookie', { path: '/' })
+        console.log('logging you out mate...')
     }
 
     componentDidMount(){
-        if(cookie.load('cookie')){
-        var data = cookie.load('cookie').split(':')[0]
-        }
-        axios.get('http://localhost:8080/tabHeaders/'+data)
+        axios.get('http://localhost:8080/tabHeaders/')
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
-                    headerArray : this.state.headerArray.concat(response.data)
+                    headerArray : this.state.headerArray.concat(response.data),
+                    firstTime:false
                 });
             });
+        }
             
-    }
+    
     
     render(){
         //if Cookie is set render Logout Button
@@ -39,9 +40,16 @@ class Navbar extends Component {
         let image = null;
         
         if(cookie.load('cookie')){
-            console.log("Able to read cookie", cookie.load('cookie').split(':')[0]);
-            
-           let headers =  this.state.headerArray.map(header => {
+            data = cookie.load('cookie').split(':')[0]
+            console.log("Able to read cookie", );
+            let roleHeaders = []
+            this.state.headerArray.forEach(obj=>{
+            if(obj.role_name === data){
+                roleHeaders.push(obj)
+            }
+            })
+
+           let headers =  roleHeaders.map(header => {
                 return(
                     <ul className = "nav navbar-nav" key ={header.tab_name}>
                     
@@ -65,7 +73,7 @@ class Navbar extends Component {
                     <img style = {{width:'100%',height:'100%',marginTop:'-20px'}}src={require('./Handshake.jpg')} />
                      )
             
-            console.log({image})
+            //console.log({image})
             navLogin = (
                 <ul className="nav navbar-nav navbar-right">
                         <li><Link style = {{color:'white'}} to="/register"><span className="glyphicon glyphicon-tasks"></span> Register</Link></li>
@@ -75,7 +83,14 @@ class Navbar extends Component {
         }
         let redirectVar = null;
         if(cookie.load('cookie')){
+            var data = cookie.load('cookie').split(':')[0]
+            console.log('Data:',data)
+            if(data==='student'){   
             redirectVar = <Redirect to="/home"/>
+        }else if(data === 'company')
+        {
+            redirectVar = <Redirect to="/companyHome"/>
+        }
         }
         return(
             <div>

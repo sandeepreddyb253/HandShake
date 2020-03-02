@@ -10,7 +10,7 @@ export default function loginReducer(state = initiaState, action){
     console.log('payload::',action.payload)
     return {
         ...state,
-        loginData: [].concat(action.payload)
+        loginData: [].concat(action.payload.data)
         };
     default:
             return state;

@@ -53,25 +53,38 @@ class Login extends Component{
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-       var   loginData = await this.props?.auth(data);
-        console.log(this.props, loginData);
-        if(this.props?.loginData.status === 200){
-                    this.setState({
-                        authFlag : true
-                    })
-                }else{
-                    this.setState({
-                        authFlag : false
-                    })
-                }
+        console.log(this.props.loginData);
+        await this.props?.auth(data);
+        console.log(this.props.loginData);
+       if(this.props?.loginData){
+            console.log('setting State !! ')
+            this.setState({
+            authFlag : true
+            })
+        }else{
+            this.setState({
+                authFlag : false
+                })
+            }
 
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        return (nextProps === this.props); // equals() is your implementation
+     }
     render(){
         //redirect based on successful login
         let redirectVar = null;
+        console.log('rendering !!')
         if(cookie.load('cookie')){
-            redirectVar = <Redirect to= "/home"/>
+            console.log('cookie loaded')
+            if(this.props.loginData[0].role === "student"){
+                console.log('redirecting to home...')
+                redirectVar = <Redirect to= "/home"/>
+            }else if(this.props.loginData[0].role ==="company"){
+                console.log('redirecting to Company home')
+                redirectVar = <Redirect to= "/companyHome"/>
+            }
         }
         return(
             <div>

@@ -34,7 +34,8 @@ app.use(bodyParser.json());
 
 app.post('/auth', async function(request, response) {
 	var username = request.body.username;
-	var password = request.body.password;
+    var password = request.body.password;
+    var res = {}
 	if (username && password) {
 	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? AND `password` = ?', [username, password],async function(error, results) {
            //console.log(error);
@@ -42,23 +43,25 @@ app.post('/auth', async function(request, response) {
                 var id;
                 var role = results[0].role_name
                 console.log(results[0].role_name)
-                if(results[0].role_name ==='student'){
+                res.role = role;
+                if(role ==='student'){
                     
                     var sqlQuery = 'select * from students where fk_user_id = '+results[0].user_id;
                     var results = await getResults(sqlQuery);
-                    console.log('student coookie id:', results)
+                    //console.log('student coookie id:', results)
                     id = results[0].student_id
-                }else if(results[0].role_name ==='company'){
+                }else if(role ==='company'){
+                    console.log('role is company !!')
                     var sqlQuery = 'select * from company where fk_user_id = '+results[0].user_id;
                     var results = await getResults(sqlQuery);
                     id = results[0].company_id
                 }
                 id = role+':'+id
                 response.cookie('cookie',id,{maxAge: 900000, httpOnly: false, path : '/'});
-               response.writeHead(200,{
-                    'Content-Type' : 'text/plain'
-                })
-             response.end("Successful Login");;
+            //    response.writeHead(200,{
+            //         'Content-Type' : 'text/plain'
+            //     })
+             response.send(res);;
 			} else {
                 console.log('Incorrect Username and/or Password!');
             }			
@@ -66,7 +69,7 @@ app.post('/auth', async function(request, response) {
 		});
 	} else {
 		response.send('Please enter Username and Password!');
-		response.end();
+		//response.end();
 	}
 });
 
@@ -298,13 +301,11 @@ app.get('/error',function(rqst,response){
 app.listen(8080);
 
 
-app.get('/tabHeaders/:id',async function(request,response){
+app.get('/tabHeaders',async function(request,response){
 
-    var data = request.params.id;
-    console.log('data',data);
-    values =[data]
-    var tabHeadersQuery = "select * from map_role_tab where role_name = ?"
-    results = await getResults(tabHeadersQuery,values);  
+   // var data = request.params.id;
+    var tabHeadersQuery = "select * from map_role_tab "
+    results = await getResults(tabHeadersQuery);  
     //console.log(results[1].job_desc);
     tabHeaders= await results;
     // var result = [];
@@ -314,7 +315,7 @@ app.get('/tabHeaders/:id',async function(request,response){
     //     }
 
     // })
-    //console.log(results);
+    console.log(results);
     response.send(tabHeaders);
 });
 
