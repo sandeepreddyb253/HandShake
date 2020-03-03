@@ -315,9 +315,38 @@ app.get('/tabHeaders',async function(request,response){
     //     }
 
     // })
-    console.log(results);
+    //console.log(results);
     response.send(tabHeaders);
 });
+
+app.get('/companyProfile/:id',async function(request,response){
+
+    var data = request.params.id;
+    var companyProfileQuery = "select * from company where company_id = ?"
+    var values = [data]
+     results = await getResults(companyProfileQuery,values);  
+     //console.log(results[1].job_desc);
+     companyProfile= await results;
+     response.send(companyProfile);
+ });
+
+ app.put('/companyProfile/:id',async function (request,response){
+    var data = request.params.id;
+    var companyObjects =  request.body;
+    companyObjects.forEach(async companyObject =>{
+    var companyProfileQuery = "update company set company_name = ?, company_desc = ?,email = ?,phone_no = ?, city = ?, state= ?,country = ? where company_id = ?"
+    var values = [companyObject.company_name,companyObject.company_desc,companyObject.email,companyObject.phone_no,companyObject.city,companyObject.state,companyObject.country,companyObject.company_id]
+     results = await getResults(companyProfileQuery,values);  
+     //console.log(results[1].job_desc);
+     companyProfile= await results;
+    
+    })
+     response.writeHead(200,{
+        'Content-Type' : 'text/plain'
+    })
+    response.end("Successful Login");;
+    //response.send(companyProfile);
+ })
 
 async function renderProfilePage(request,response, studentObject,stduentEducation,studentExperience,student_id){
     console.log('studentId: ',student_id)     

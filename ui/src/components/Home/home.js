@@ -10,9 +10,11 @@ class Home extends Component {
     constructor(){
         super();
         this.state = {  
-            jobs : []
+            jobs : [],
+            redirect:''
         }
         this.saveApplication = this.saveApplication.bind(this)
+        this.viewProfile = this.viewProfile.bind(this)
     }  
     //get the books data from backend  
     componentDidMount(){
@@ -46,14 +48,22 @@ class Home extends Component {
 
     }
 
+    viewProfile(id){
+        console.log('View Profile please')
+        this.setState({ redirect: `/companyViewProfile/${id}` });
+    }
+
     render(){
         
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />;
+            }
         //console.log(this.state.jobs)
         //iterate over books to create a table row
         let details = this.state.jobs.map(job => {
             return(
                 <div className="row" key = {job.postion}>
-                <div className = "well" style = {{height:'175px',width:'60%'}}>
+                <div className = "well" style = {{height:'200px',width:'60%'}}>
 				<div className="col-sm-8" style ={{width:'80%'}}>
 						<h3>{job.postion}</h3>
                         <p> {job.job_desc}, {job.job_location} </p>
@@ -75,6 +85,7 @@ class Home extends Component {
                     <p>{job.deadline}</p>
                 </div>
                 </Popup>
+                <button  style = {{float :'right',width :'100px',height:'30px'}} onClick = {(e)=>this.viewProfile(job.fk_company_id)}> {job.company_name}</button>
                 </div>
 		        </div> 
                 </div>  

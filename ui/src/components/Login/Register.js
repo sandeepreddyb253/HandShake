@@ -67,6 +67,7 @@ class Register extends Component {
   }
 
    async submitRegister (e)  {
+    if(document.forms['registerForm'].reportValidity()){
     // eslint-disable-next-line
     var headers = new Headers();
     //prevent page from refresh
@@ -94,6 +95,7 @@ class Register extends Component {
           registerFlag: false
         });
       }
+    }
   };
 
   render() {
@@ -104,6 +106,12 @@ class Register extends Component {
       console.log("Register is:::", this.state.registerFlag);
       redirectVar = <Redirect to="/login" />;
     }
+    let descVar = 'Last Name';
+    if(this.state.role === 'student'){
+      descVar = 'Last Name';
+    }else if (this.state.role === 'company'){
+      descVar ='Description of your company';
+    }
 
     return (
       <div>
@@ -111,42 +119,40 @@ class Register extends Component {
         
           <div className="register-form">
             <h1>Register to Handshake</h1>
-            <form action="register" method="POST">
+            <form id = "registerForm" action="register" method="POST">
               <input
                 type="email"
                 name="email"
+                pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" 
                 onChange={this.emailChangeHandler}
-                placeholder="email"
+                placeholder="Email"
                 required
               />
               <input
                 type="text"
                 name="username"
                 onChange={this.usernameChangeHandler}
-                placeholder="username"
+                placeholder="User Name"
                 required
               />
               <input
                 type="text"
                 onChange={this.firstnameChangeHandler}
                 name="firstname"
-                placeholder="firstname"
+                placeholder="First Name"
                 required
               />
               <input
                 type="text"
                 onChange={this.lastnameChangeHandler}
                 name="lastName"
-                placeholder="lastName"
+                placeholder={descVar}
                 required
               />
-              <input
-                type="text"
-                onChange={this.roleChangeHandler}
-                name="role"
-                placeholder="role"
-                required
-              />
+              <select style = {{width:'300px',height:'50px',marginBottom:'15px'}} onChange={this.roleChangeHandler}>
+          <option value="student">student</option>
+          <option value="company">company</option>
+            </select>
               <input
                 type="password"
                 onChange={this.passnameChangeHandler}
