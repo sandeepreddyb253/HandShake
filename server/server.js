@@ -184,6 +184,50 @@ app.get('/getAllStudents',async function(request,response){
     response.send(results);
 })
 
+app.get('/companyJobPostings/:id',async function(request,response){
+   var data = request.params.id
+   console.log('data::',data)
+    var companyJobQuery = 'select * from job_postings where fk_company_id = ?'
+    values = [data]
+    results = await getResults(companyJobQuery,values);
+    response.send(results);
+})
+
+app.put('/saveJobs',async function(request, response) {
+    if (true) {
+       
+        //var data = request.body;
+        //console.log('Expereince id: ',expId);
+        const job = request.body;
+       // var student_id = experiences[0].fk_student_id;
+        console.log(job);
+        if(job.job_id){
+            console.log('updating job')
+            var values  = [job.postion, job.job_desc,job.job_long_desc,job.job_long_desc2,job.job_long_dec3,job.job_location,job.deadline,job.category,job.skills_required,job.job_id]
+            var updateQuery = 'update job_postings set postion = ?, job_desc = ?,job_long_desc = ?,job_long_desc2 = ?,job_long_dec3=?,job_location = ?,deadline = ? ,category = ?,skills_required = ? where job_id = ?';
+            results = await getResults(updateQuery,values);
+            console.log(results);
+            }else{
+                console.log('inserting experince')
+                var insertQuery = "insert into job_postings (postion,fk_company_id,job_desc,job_long_desc,job_long_desc2,job_long_dec3,job_location,deadline,category,skills_required,company_name) values ('" + job.postion + "','"+job.fk_company_id + "','" +job.job_desc+"','" + job.job_long_desc + "','" +job.job_long_desc2 + "','" +job.job_long_dec3 + "','" +job.job_location + "','" +job.deadline + "','" +job.category + "','" +job.skills_required +"','Company Details')";
+                results = await getResults(insertQuery,values);
+            }
+
+            }
+        
+        
+        response.writeHead(200,{
+            'Content-Type' : 'text/plain'
+        })
+        response.end("Successful Login");;
+        
+     } );
+     //response.end();
+ 
+
+
+
+
 app.put('/profile/editExperience/:id', function(request, response) {
     if (true) {
        

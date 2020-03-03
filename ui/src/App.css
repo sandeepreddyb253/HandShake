@@ -93,11 +93,24 @@ button{
   text-align: center;
 }
 
-textarea[disabled],
+
 button[disabled]{
   background-color:#3333
 }
-
+select[disabled]{
+  background-color: whitesmoke;
+  border: 0px !important;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+}
+textarea[disabled]{
+  background-color: whitesmoke;
+    border: 0px !important;
+    resize: none;
+}
+textarea{
+  resize:none
+}
 input[disabled]{
     background-color: whitesmoke;
     border: 0px !important

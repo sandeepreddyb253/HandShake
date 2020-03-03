@@ -107,10 +107,13 @@ class Register extends Component {
       redirectVar = <Redirect to="/login" />;
     }
     let descVar = 'Last Name';
+    let companyName = 'First Name';
     if(this.state.role === 'student'){
       descVar = 'Last Name';
+      companyName = 'First Name'
     }else if (this.state.role === 'company'){
       descVar ='Description of your company';
+      companyName = 'Name of the company';
     }
 
     return (
@@ -139,7 +142,7 @@ class Register extends Component {
                 type="text"
                 onChange={this.firstnameChangeHandler}
                 name="firstname"
-                placeholder="First Name"
+                placeholder={companyName}
                 required
               />
               <input

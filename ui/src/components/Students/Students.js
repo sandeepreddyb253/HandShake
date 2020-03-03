@@ -55,10 +55,11 @@ class Students extends Component {
         let details = this.state.students.map(student => {
             return(
                 <div className="row" key = {student.student_id}>	
-				<div className="well" style ={{height:'175px',width:'80%'}}>
+				<div className="well" style ={{height:'190px',width:'80%'}}>
             <h3>{student.first_name}, {student.last_name}</h3>
-                        <p><span style = {{fontWeight:'bold'}}>Objective: </span>{student.objective}</p> 
-                        <p> <span style = {{fontWeight:'bold'}}>College: </span>   {student.college_name} 
+                        <p><span style = {{fontWeight:'bold'}}>Education: </span>{student.education}</p> 
+                        <p> <span style = {{fontWeight:'bold'}}>College: </span>   {student.college_name}</p> 
+                        <p><span style = {{fontWeight:'bold'}}>Skills: </span>   {student.skills}
                         <button  style = {{float :'right',width :'100px',height:'30px'}} onClick = {(e)=>this.viewProfile(student.student_id)}> View Profile</button>
                         </p>
 				</div>
