@@ -50,7 +50,7 @@ export function saveStudentObject(payload){
               }));
                   
               
-              dispatch(fetchProfile(payload[0].student_id))
+   dispatch(fetchProfile(payload[0].student_id))
   }
 }
 

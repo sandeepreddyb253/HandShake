@@ -178,10 +178,47 @@ app.get('/profile/:id', function(request, response) {
 
 
 app.get('/getAllStudents',async function(request,response){
+    var first_name = request.query.first_name
+    var college_name = request.query.college_name
+    var major = request.query.major
+    let values = [college_name,major];
+    let parameter = false;
+    if((first_name!= '') || (college_name!='' )|| (major!='')){
+        console.log('fetching only few guys',first_name , college_name, major )
+        let studentsQuery = "select * from students where"
+            if(first_name != 'undefined' && first_name!= ''){
+                studentsQuery= studentsQuery.concat(" first_name like '%"+first_name+"%' ")
+                console.log('appending',studentsQuery)
+                //values.concat(first_name)
+                parameter = true
+            }
+            if(college_name != 'undefined'){
+                if(parameter){
+                    studentsQuery.concat(" and ")
+                    
+                }
+                studentsQuery = studentsQuery.concat(" college_name = '"+ college_name+"'")
+                parameter = true
+                //values.concat(college_name)
+            }
+            if(major != 'undefined'){
+                if(parameter){
+                    studentsQuery.concat(" and ")
+                }
+                studentsQuery = studentsQuery.concat(" major = '"+major+"'")
+               // values.concat(major)
+            }
+        console.log(studentsQuery)
+       // let values = [first_name,college_name,major]
+        let results = await getResults(studentsQuery);
+        response.send(results);
+    }else{
+        console.log('fetching everyone')
     var studentsQuery = 'select * from students'
    // values = [1]
     results = await getResults(studentsQuery);
     response.send(results);
+    }
 })
 
 app.get('/companyJobPostings/:id',async function(request,response){
@@ -285,8 +322,8 @@ app.put('/profile/editExperience/:id', function(request, response) {
         var student_id = studentObjects[0].student_id;
         studentObjects.forEach(async obj => {
             if(obj.student_id){
-            var values  = [obj.first_name,obj.last_name,obj.city,obj.email,obj.phone_no, obj.skills,obj.education,obj.objective,student_id]
-            var updateQuery = 'update students set first_name =?,last_name = ?,city=?, email = ?, phone_no = ?,skills = ?,education=?,objective =? where student_id = ?';
+            var values  = [obj.first_name,obj.last_name,obj.city,obj.email,obj.phone_no, obj.skills,obj.major,obj.objective,obj.college_name,student_id]
+            var updateQuery = 'update students set first_name =?,last_name = ?,city=?, email = ?, phone_no = ?,skills = ?,major=?,objective =?,college_name=? where student_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }

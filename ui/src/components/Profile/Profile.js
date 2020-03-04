@@ -142,7 +142,7 @@ class Profile extends Component {
             studObj.map((obj)=>{
                 if(obj.student_id ===id ){
                     obj[name] = e.target.value;
-                    //console.log(e.target.value);
+                    console.log(e.target.value);
                 }
             })
         }else if(type === "newEducation"){
@@ -306,6 +306,24 @@ class Profile extends Component {
                     <div  className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isBasicSaveEnabled}  onChange = {(e)=>this.changeHandler(e,obj.student_id,"last_name","studentObject")} defaultValue = {obj.last_name}/>
                      </div>
+                     <p style = {{fontWeight: 'bold'}}>Major:</p>
+					
+                     <select style = {{width:'90%',height:'25px',marginBottom:'15px'}} disabled={!this.state.isBasicSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_id,"major","studentObject")} defaultValue = {obj.major}>
+                      <option value="Software Engineering">Software Engineering</option>
+                     <option value="Computer Engineering">Computer Engineering</option>
+                     <option value="Data Analytics">Data Analytics</option>
+                     <option value="Electrical Engineering">Electrical Engineering</option>
+                         </select>
+
+                    <p style = {{fontWeight: 'bold'}}>Current College:</p>
+					
+                    <select style = {{width:'90%',height:'25px',marginBottom:'15px'}} disabled={!this.state.isBasicSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_id,"college_name","studentObject")} defaultValue = {obj.college_name}>
+                     <option value="SJSU">SJSU</option>
+                    <option value="UFL">UFL</option>
+                    <option value="UTD">UTD</option>
+                    <option value="Stanford">Stanford</option>
+                    </select>
+                    
                     <p style = {{fontWeight: 'bold'}}>City:</p>
 					
                     <div  className="form-group">

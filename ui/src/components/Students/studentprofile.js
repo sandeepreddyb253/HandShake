@@ -63,6 +63,8 @@ class Profile extends Component {
                     
                      <p style = {{fontWeight: 'bold'}}>Last Name:</p>
                      <p>{obj.last_name}</p>
+                     <p style = {{fontWeight: 'bold'}}>Major:</p>
+                     <p>{obj.major}</p>
                 
                     <p style = {{fontWeight: 'bold'}}>City:</p>
 					<p>{obj.city}</p>
