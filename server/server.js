@@ -114,7 +114,39 @@ app.post('/saveApplication',async function(request,response){
     var jobId = request.body.jobId;
     var studentId = request.body.studentId;
 
-    var applicationsQuery = "insert into map_student_job (fk_student_id,fk_job_id ) Values ('" + studentId + "','" + jobId + "')";
+    var dateNow = new Date();
+    var dd = dateNow.getDate();
+    var monthSingleDigit = dateNow.getMonth() + 1,
+    mm = monthSingleDigit < 10 ? '0' + monthSingleDigit : monthSingleDigit;
+    var yyyy = dateNow.getFullYear().toString();
+
+    var application_date = yyyy + '-' + mm + '-' +dd;
+
+    var applicationsQuery = "insert into map_student_job (fk_student_id,fk_job_id ,application_date,status) Values ('" + studentId + "','" + jobId +"','" + application_date +"','" + "Pending" + "')";
+
+    results = await getResults(applicationsQuery);
+    console.log(results);
+    response.writeHead(200,{
+    'Content-Type' : 'text/plain'
+    })
+    response.end("Successfully Saved application");;
+
+})
+
+
+app.post('/saveRegister',async function(request,response){
+    var event_id = request.body.event_id;
+    var studentId = request.body.studentId;
+
+    var dateNow = new Date();
+    var dd = dateNow.getDate();
+    var monthSingleDigit = dateNow.getMonth() + 1,
+    mm = monthSingleDigit < 10 ? '0' + monthSingleDigit : monthSingleDigit;
+    var yyyy = dateNow.getFullYear().toString();
+
+    var application_date = yyyy + '-' + mm + '-' +dd;
+
+    var applicationsQuery = "insert into map_student_event (fk_student_id,fk_event_id ,registration_data) Values ('" + studentId + "','" + event_id +"','" + application_date +"')";
 
     results = await getResults(applicationsQuery);
     console.log(results);
@@ -132,28 +164,26 @@ app.get('/home/:id', async function(request, response) {
         console.log("request in Home page")
        await  renderHomePage(request, response,jobPostings,data)
         
-	} else {
-        response.redirect('/');
-	}
-	//response.end();
+	} 
 });
 
 
-app.get('/events', function(request, response) {
+app.get('/events/:id', function(request, response) {
 	if (true) {
+        var data = request.params.id
+        var event_name = request.query.event_name
         var jobPostings;
-        renderEventsPage(request, response,jobPostings)
+        renderEventsPage(request, response,jobPostings,data,event_name)
         
-	} else {
-        response.redirect('/');
-	}
+	} 
 	//response.end();
 });
 
 app.get('/applications/:id', async function(request, response) {
 	if (true) {
         var data = request.params.id;
-        await renderApplicationsData(request, response,data)
+        var status = request.query.status
+        await renderApplicationsData(request, response,data,status)
         
 	} else {
         response.redirect('/');
@@ -215,6 +245,61 @@ app.get('/getAllStudents',async function(request,response){
     }else{
         console.log('fetching everyone')
     var studentsQuery = 'select * from students'
+   // values = [1]
+    results = await getResults(studentsQuery);
+    response.send(results);
+    }
+})
+
+
+app.get('/searchJobs',async function(request,response){
+    var company_name = request.query.company_name
+    var postion = request.query.postion
+    var job_location = request.query.job_location
+    var category = request.query.category
+   // let values = [college_name,major];
+    let parameter = false;
+    if((company_name!= '') || (postion!='' )|| (job_location!='')|| (category !='' )){
+        console.log('fetching only few guys',company_name , postion, job_location,category )
+        let studentsQuery = "select * from job_postings where"
+            if(company_name != 'undefined' && company_name!= ''){
+                studentsQuery= studentsQuery.concat(" company_name like '%"+company_name+"%' ")
+                //console.log('appending',studentsQuery)
+                //values.concat(first_name)
+                parameter = true
+            }
+            if(postion != 'undefined' && postion!= ''){
+                if(paramater){
+                    studentsQuery.concat(" and ")
+                }
+                studentsQuery= studentsQuery.concat(" postion like '%"+postion+"%' ")
+                //console.log('appending',studentsQuery)
+                //values.concat(first_name)
+                parameter = true
+            }
+            if(job_location != 'undefined'){
+                if(parameter){
+                    studentsQuery.concat(" and ")
+                    
+                }
+                studentsQuery = studentsQuery.concat(" job_location = '"+ job_location+"'")
+                parameter = true
+                //values.concat(college_name)
+            }
+            if(category != 'undefined'){
+                if(parameter){
+                    studentsQuery.concat(" and ")
+                }
+                studentsQuery = studentsQuery.concat(" category = '"+category+"'")
+               // values.concat(major)
+            }
+        console.log(studentsQuery)
+       // let values = [first_name,college_name,major]
+        let results = await getResults(studentsQuery);
+        response.send(results);
+    }else{
+        console.log('fetching everyone')
+    var studentsQuery = 'select * from job_postings'
    // values = [1]
     results = await getResults(studentsQuery);
     response.send(results);
@@ -453,7 +538,60 @@ async function renderProfilePage(request,response, studentObject,stduentEducatio
 
 async function renderHomePage(request,response,jobPostings,data){
   // var student_id = data;
-    var jobPostingsQuery = "select * from job_postings ";
+  var company_name = request.query.company_name
+    var postion = request.query.postion
+    var job_location = request.query.job_location
+    var category = request.query.category
+    var jobPostingsQuery
+   // let values = [college_name,major];
+   
+    if((company_name != undefined) || (postion != undefined )|| (job_location!=undefined)|| (category !=undefined )){
+        console.log('fetching only few guys',company_name , postion, job_location,category )
+        jobPostingsQuery = "select * from job_postings where"
+        let parameter = false;
+            if(await company_name != 'undefined' && company_name!= ''){
+                  jobPostingsQuery= jobPostingsQuery.concat(" company_name like '%"+company_name+"%' ")
+                parameter = true
+            }
+            if(postion != 'undefined' && postion!= ''){
+                console.log('Parameter here ::',parameter)
+                 if(await parameter){
+                    console.log('Anddd')
+                    jobPostingsQuery = jobPostingsQuery.concat(" and ");
+                }
+                jobPostingsQuery= jobPostingsQuery.concat(" postion like '%"+postion+"%' ")
+                //console.log('appending',studentsQuery)
+                //values.concat(first_name)
+                parameter = true
+            }
+            if(job_location != 'undefined'){
+                if(parameter){
+                    jobPostingsQuery =    jobPostingsQuery.concat(" and ")
+                    
+                }
+                jobPostingsQuery = jobPostingsQuery.concat(" job_location = '"+ job_location+"'")
+                parameter = true
+                //values.concat(college_name)
+            }
+            if(category != 'undefined'){
+                if(parameter){
+                    jobPostingsQuery=  jobPostingsQuery.concat(" and ")
+                }
+                jobPostingsQuery = jobPostingsQuery.concat(" category = '"+category+"'")
+               // values.concat(major)
+            }
+        console.log(jobPostingsQuery)
+       // let values = [first_name,college_name,major]
+        //let results = await getResults(studentsQuery);
+        //response.send(results);
+    }else{
+        console.log('fetching everyone')
+         jobPostingsQuery = "select * from job_postings ";
+         // values = [1]
+    //results = await getResults(studentsQuery);
+    //response.send(results);
+    }
+    
     var values = [data]
     console.log('dataaa:',data)
     var applicationsQuery = 'select * from map_student_job where fk_student_id = ?';
@@ -479,26 +617,54 @@ async function renderHomePage(request,response,jobPostings,data){
     response.send(jobPostings);
 }
 
-async function renderEventsPage(request,response,events){
+async function renderEventsPage(request,response,events,data,event_name){
+    //data = 1
     var eventsQuery = "select * from company_events ";
+    if(event_name){
+        console.log('event_name::',event_name)
+        eventsQuery= eventsQuery.concat(" where event_name like '%"+event_name+"%'")
+    }
     results = await getResults(eventsQuery);  
     //console.log(results[1].job_desc);
     events = await results;
+    for(event of events){
+       event = await modifyEventsData(event,data)
+    }
+
+    var studentEventQuery = 'select * from map_student_event where fk_student_id ='+"'"+data+"'";
    // console.log('postings:'+jobPostings.job_desc)
-	response.send(events)
+    studentEvents = await getResults(studentEventQuery);
+    for(event of studentEvents){
+        event = await modifyStudentsEventsData(event,data)
+     }
+    response.json({
+        events:events,
+        studentEvents:studentEvents
+    })
 }
 
 
-async function renderApplicationsData(request,response,data){
+async function renderApplicationsData(request,response,data,status){
     var values = [data]
     var applicationsQuery = 'select * from map_student_job where fk_student_id = ?';
+    if(status){
+        applicationsQuery=  applicationsQuery.concat(" and status = '"+status +"'")
+    }
     studentApplications = await getResults(applicationsQuery,values);
 
-    await studentApplications.forEach(async app=>{
-        var jobQuery = 'select * from job_postings where job_id = ?'
+    for (var app of studentApplications){
+      app =  await modifyData(app)
+    }
+    results = await studentApplications
+    console.log('modified result:',results);
+    response.send(results);
+}
+
+async function modifyData(app){
+    var jobQuery = 'select * from job_postings where job_id = ?'
         var jobValues = [app.fk_job_id];
         job = await getResults(jobQuery,jobValues);
-        console.log('jobs:',job[0].postion)
+       // console.log('jobs:',job[0].postion)
         app.postion =  job[0].postion;
         app.job_desc =  job[0].job_desc;
         app.job_location =  job[0].job_location
@@ -507,10 +673,36 @@ async function renderApplicationsData(request,response,data){
         company = await getResults(companyQuery,companyValues);
         app.company_name =  company[0].company_name;
         console.log('apppp:',app)
-    })
-    results = await studentApplications
-    console.log('modified result:',results);
-    response.send(results);
+        return app
 }
 
+async function modifyEventsData(event,data){
+    var query = 'select * from map_student_event where fk_student_id = ? and fk_event_id = ?'
+    var values = [data,event.event_id]
 
+    result = await getResults(query,values)
+
+    if(result.length>0){
+        event.status = 'Registered'
+        event.disable = true
+    }else{
+        event.status = 'Register'
+        event.disable = false
+    }
+    return event
+}
+
+async function modifyStudentsEventsData(event,data){
+    var query = 'select * from company_events where event_id = ?'
+    var values = [event.fk_event_id]
+
+    results = await getResults(query,values)
+
+    event.event_name = await results[0].event_name;
+    event.location = await results[0].location;
+    event.eligibility = await results[0].eligibility;
+    event.event_time = await results[0].event_time;
+    event.event_desc = await results[0].event_desc;
+
+    
+}

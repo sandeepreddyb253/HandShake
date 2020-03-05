@@ -174,11 +174,18 @@ class companyHome extends Component {
                     <select style = {{width:'300px',height:'50px',marginBottom:'15px'}} disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"category")} defaultValue = {obj.category}>
                       <option value="Full Time">Full Time</option>
                      <option value="Part Time">Part Time</option>
+                     <option value="On Campus">On Campus</option>
+                     <option value="Internship">Internship</option>
                          </select>
                     <p style ={{fontWeight: 'bold'}}>Job Location:</p>
-                    <div className="form-group">
-                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_location")} defaultValue = {obj.job_location}/>
-                    </div>
+                    <select style = {{width:'300px',height:'50px',marginBottom:'15px'}} disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_location")} defaultValue = {obj.job_location} >
+                        <option value="" disabled >Job Location</option>
+                        <option value="San Jose">San Jose</option>
+                        <option value="Palo Alto">Palo Alto</option>
+                        <option value="San Fransisco">San Fransisco</option>
+                        <option value="Santa Clara">Santa Clara</option>
+                        <option value="Freemont">Freemont</option>
+                        </select>
                     <p style ={{fontWeight: 'bold'}}>Deadline:</p>
                     <div className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"deadline")} defaultValue = {obj.deadline}/>
