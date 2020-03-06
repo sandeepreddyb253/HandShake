@@ -117,7 +117,9 @@ textarea[disabled]{
     resize: none;
 }
 textarea{
-  resize:none
+  resize:none;
+  border : 2px;
+  border-style:inset
 }
 input[disabled]{
     background-color: whitesmoke;

@@ -124,7 +124,7 @@ saveRegistration(event_id){
                 <div> <h4 style = {{fontWeight:'bold'}}>Event Description</h4>
                    <p> {event.event_desc}</p>
                    <p style = {{fontWeight:'bold'}}>Eligibility:</p>
-                    <p>{event.eligibility}</p>
+                    <p>{event.eligiblity}</p>
                     <p style = {{fontWeight:'bold'}}>Date: </p>
                     <p>{event.event_time}</p>
                 </div>

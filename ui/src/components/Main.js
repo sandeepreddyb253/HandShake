@@ -17,6 +17,8 @@ import { Provider } from "react-redux";
 import store from "../ReduxModules/store/index";
 import companyProfile from "./Profile/companyProfile";
 import companyViewProfile from "./Profile/companyViewProfile"
+import jobStudents from "./Students/jobStudents"
+import companyEvents from "./Events/companyEvents"
 //Create a Main Component
 class Main extends Component {
     render(){
@@ -36,7 +38,8 @@ class Main extends Component {
                 <Route path = "/companyHome" component = {companyHome}/>
                 <Route path = "/companyProfile" component = {companyProfile}/>
                 <Route path="/companyViewProfile/:id" component={companyViewProfile}/>
-                {/*<Route path="/create" component={Create}/> */}
+                <Route path="/jobStudents/:id" component={jobStudents}/>
+                <Route path="/companyEvents" component={companyEvents}/>
             </div>
             </Provider>
         )

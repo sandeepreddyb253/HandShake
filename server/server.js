@@ -207,6 +207,19 @@ app.get('/profile/:id', function(request, response) {
 });
 
 
+app.get('/getJobStudents/:id', async function(request,response) {
+    
+    var jobStudentsQuery = "select * from map_student_job msj join students s on msj.fk_student_id = s.student_id where msj.fk_job_id ='"+request.params.id+"'";
+    jobStudents = await getResults(jobStudentsQuery);
+    console.log(jobStudents)
+
+    
+    var studentsQuery = 'select * from students'
+    // values = [1]
+     results = await getResults(studentsQuery);
+     response.send(jobStudents); 
+});
+
 app.get('/getAllStudents',async function(request,response){
     var first_name = request.query.first_name
     var college_name = request.query.college_name
@@ -315,6 +328,22 @@ app.get('/companyJobPostings/:id',async function(request,response){
     response.send(results);
 })
 
+app.put('/updateJobStatus',async function(request,response){
+    try{
+        values = [request.body.status,request.body.map_application_id]
+        var updateQuery = 'update map_student_job set status = ? where  map_application_id = ?';
+        results = await getResults(updateQuery,values); 
+        //console.log('jaffa',jaffa)
+        response.writeHead(200,{
+            'Content-Type' : 'text/plain'
+        })
+        response.end("Successful updated");
+    }catch(err){
+        console.log('error')
+        response.end(err.message);
+    }
+})
+
 app.put('/saveJobs',async function(request, response) {
     if (true) {
        
@@ -346,7 +375,42 @@ app.put('/saveJobs',async function(request, response) {
      } );
      //response.end();
  
+     app.put('/saveEvents',async function(request, response) {
+        if (true) {
+           try{
+            const event = request.body;
+            console.log(event);
+            if(event.event_id){
+                console.log('updating job')
+                var values  = [event.event_name, event.event_desc,event.location,event.event_time,event.eligiblity,event.event_id]
+                var updateQuery = 'update company_events set event_name = ?, event_desc = ?,location = ?,event_time = ?,eligiblity=? where event_id = ?';
+                results = await getResults(updateQuery,values);
+                console.log(results);
+                }else{
+                    console.log('inserting experince')
+                    var insertQuery = "insert into company_events (event_name,fk_company_id,event_desc,location,event_time,eligiblity) values ('" + event.event_name + "','"+event.fk_company_id + "','" +event.event_desc+"','" + event.location + "','" +event.event_time + "','" +event.eligibility +"')";
+                    results = await getResults(insertQuery);
+                }
+    
+                
+            response.writeHead(200,{
+                'Content-Type' : 'text/plain'
+            })
+            response.end("Successfully Upated");;
+        }catch(err){
+            response.end(err.message)
+        }
+         } 
+        });
 
+app.get('/companyEvents/:id',async function(request,response){
+    var data = request.params.id
+   console.log('data::',data)
+    var companyJobQuery = 'select * from company_events where fk_company_id = ?'
+    values = [data]
+    results = await getResults(companyJobQuery,values);
+    response.send(results);
+})
 
 
 
@@ -627,8 +691,11 @@ async function renderEventsPage(request,response,events,data,event_name){
     results = await getResults(eventsQuery);  
     //console.log(results[1].job_desc);
     events = await results;
+
+    var studentQuery = "select * from students where student_id = '"+data+"'"
+    var studentsResult = await getResults(studentQuery)
     for(event of events){
-       event = await modifyEventsData(event,data)
+       event = await modifyEventsData(event,data,studentsResult[0].major)
     }
 
     var studentEventQuery = 'select * from map_student_event where fk_student_id ='+"'"+data+"'";
@@ -676,18 +743,25 @@ async function modifyData(app){
         return app
 }
 
-async function modifyEventsData(event,data){
+async function modifyEventsData(event,data,major){
     var query = 'select * from map_student_event where fk_student_id = ? and fk_event_id = ?'
     var values = [data,event.event_id]
 
     result = await getResults(query,values)
-
+    console.log('result',result)
     if(result.length>0){
         event.status = 'Registered'
         event.disable = true
     }else{
+        {
+        if(event.eligiblity === major || event.eligiblity ==='All'){
         event.status = 'Register'
         event.disable = false
+        }else{
+            event.status = 'Ineligible'
+            event.disable = true
+        }
+        }
     }
     return event
 }
