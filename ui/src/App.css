@@ -98,12 +98,17 @@ button[disabled]{
   background-color:#3333
 }
 select[disabled]{
-  background-color: whitesmoke;
+  background-color: #f7f7f7;
   border: 0px !important;
   -webkit-appearance:none;
   -moz-appearance:none;
   margin-top:-5px;
   margin-bottom:5px !important
+}
+
+.well{
+  background-color:#f7f7f7;
+  border : 2px solid #e3e3e3;
 }
 
 select{
@@ -112,7 +117,7 @@ select{
   border-style:inset
 }
 textarea[disabled]{
-  background-color: whitesmoke;
+  background-color: #f7f7f7;
     border: 0px !important;
     resize: none;
 }
@@ -122,7 +127,7 @@ textarea{
   border-style:inset
 }
 input[disabled]{
-    background-color: whitesmoke;
+    background-color: #f7f7f7;
     border: 0px !important
 }
 .container-fluid{

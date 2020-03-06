@@ -68,12 +68,6 @@ class Navbar extends Component {
         }else{
             //Else display login button
             console.log("Not Able to read cookie");
-            image = (
-                
-                    <img style = {{width:'100%',height:'100%',marginTop:'-20px'}}src={require('./Handshake.jpg')} />
-                     )
-            
-            //console.log({image})
             navLogin = (
                 <ul className="nav navbar-nav navbar-right">
                         <li><Link style = {{color:'white'}} to="/register"><span className="glyphicon glyphicon-tasks"></span> Register</Link></li>
@@ -93,7 +87,7 @@ class Navbar extends Component {
         }
         }
         return(
-            <div>
+            <div style = {{background:'#f7f7f7'}}>
                 {redirectVar}
             <nav className="navbar navbar-inverse">
                 <div className="container-fluid">

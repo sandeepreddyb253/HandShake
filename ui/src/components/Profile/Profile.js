@@ -474,6 +474,7 @@ class Profile extends Component {
         
 
         return(
+            <div >
             <div style = {{marginLeft: '25px'}}>
                 {redirectVar}
                 <div className="row">
@@ -547,6 +548,7 @@ class Profile extends Component {
 			</div>
 		</div> 
             </div> 
+         </div>
         )
     }
 }

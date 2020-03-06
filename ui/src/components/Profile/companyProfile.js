@@ -11,7 +11,7 @@ class companyProfile extends Component {
         this.initialState = {  
             companyObject : [],
             isProfileSaveEnabled : false,
-            isEduSaveEnabled:false
+            isContactSaveEnabled:false
         }
         this.state = this.initialState;
         
@@ -19,6 +19,7 @@ class companyProfile extends Component {
         this.changeHandler = this.changeHandler.bind(this);
         this.cancelHandler = this.cancelHandler.bind(this);
         this.EditHandler = this.EditHandler.bind(this);
+        this.EditContactHandler = this.EditContactHandler.bind(this);
     }  
 
     
@@ -39,7 +40,10 @@ class companyProfile extends Component {
         this.setState({
             isProfileSaveEnabled:true})
     }
-
+    EditContactHandler(){
+        this.setState({
+            isContactSaveEnabled:true})
+    }
 
     changeHandler(e, id, name) {
         
@@ -80,6 +84,7 @@ class companyProfile extends Component {
 
     //get the books data from backend  
     componentDidMount(){
+        if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
         axios.get('http://localhost:8080/companyProfile/'+data)
                 .then((response) => {
@@ -88,13 +93,30 @@ class companyProfile extends Component {
                     companyObject : this.state.companyObject.concat(response.data),
                 });
             });
+        }
             
     }
 
     render(){
-        
-        //if not logged in go to login page
-        
+        let contactDetails = this.state.companyObject.map(obj => {
+            return(
+                <div key ={obj.company_id}>
+                <p style ={{fontWeight: 'bold'}}>Email:</p>
+                
+                <div className="form-group">
+                    <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"email")} defaultValue = {obj.email}/>
+                </div>
+                <p style ={{fontWeight: 'bold'}}>Phone No:</p>
+                
+                <div className="form-group">
+                    <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isContactSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"phone_no")} defaultValue = {obj.phone_no}/>
+                </div>
+                
+                </div>
+            )
+        })
+       
+
         let companyDetails =  this.state.companyObject.map(obj => {
             return(
                 <div key ={obj.company_id}> 
@@ -105,17 +127,7 @@ class companyProfile extends Component {
                 <p style ={{fontWeight: 'bold'}}>Description:</p>
                 
                  <div className="form-group">
-                    <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"company_desc")} defaultValue = {obj.company_desc}/>
-                </div>
-                <p style ={{fontWeight: 'bold'}}>Email:</p>
-                
-                <div className="form-group">
-                    <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"email")} defaultValue = {obj.email}/>
-                </div>
-                <p style ={{fontWeight: 'bold'}}>Phone No:</p>
-                
-                <div className="form-group">
-                    <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"phone_no")} defaultValue = {obj.phone_no}/>
+                    <textarea  contenteditable ="true" style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"company_desc")} defaultValue = {obj.company_desc}/>
                 </div>
                 <p style ={{fontWeight: 'bold'}}>City:</p>
                 
@@ -145,9 +157,13 @@ class companyProfile extends Component {
         
 
         return(
+            <div>
+            <img style = {{height:'250px',marginTop:'-20px',width:'100%'}} src ={require("../Util/company.jpg")}></img>
             <div style = {{marginLeft: '25px'}}>
                 {redirectVar}
                 <div className="row">
+                    
+                
 			<div className="col-sm-8" >
 				
                 <div className="well">
@@ -168,10 +184,23 @@ class companyProfile extends Component {
 				</div>
 
 			</div>
+            <div className="col-sm-3">
+				
+            <div className="well">
+					<h2>contactDetails
+                    <button onClick= {this.EditContactHandler} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
+                    </h2>
+					{contactDetails}
+                    <button onClick= {(e)=>this.saveHandler()} hidden = {!this.state.isContactSaveEnabled} style = {{width:'75px'}}>Save</button>
+                    <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isContactSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
+				</div>
+
+			</div>
 
             
 		</div> 
             </div> 
+            </div>
         )
     }
 }

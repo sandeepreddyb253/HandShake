@@ -688,6 +688,7 @@ async function renderEventsPage(request,response,events,data,event_name){
         console.log('event_name::',event_name)
         eventsQuery= eventsQuery.concat(" where event_name like '%"+event_name+"%'")
     }
+    eventsQuery.concat(" order by event_time")
     results = await getResults(eventsQuery);  
     //console.log(results[1].job_desc);
     events = await results;
