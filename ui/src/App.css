@@ -120,9 +120,11 @@ textarea[disabled]{
   background-color: #f7f7f7;
     border: 0px !important;
     resize: none;
+    overflow: auto;
 }
 textarea{
-  resize:none;
+  overflow: auto;
+  resize: none;
   border : 2px;
   border-style:inset
 }
@@ -211,4 +213,11 @@ input[disabled]{
     
     .profileImage{
       width:'25%'
+    }
+
+    .centered {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }

@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { compareAsc, format } from 'date-fns'
+import TextareaAutosize from 'react-textarea-autosize';
 
 class companyEvents extends Component {
     constructor(){
@@ -28,7 +28,8 @@ class companyEvents extends Component {
     }  
 
     viewStudents(id){
-        this.setState({ redirect: `/jobStudents/${id}` });
+        console.log('View Students registered')
+        this.setState({ redirect: `/eventStudents/${id}` });
     }
 
     AddEvent(){
@@ -154,7 +155,7 @@ class companyEvents extends Component {
 					<p style ={{fontWeight: 'bold'}}>Event Description:</p>
 					
                     <div className="form-group">
-                        <textarea  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.event_id,"event_desc")} defaultValue = {obj.event_desc}/>
+                        <TextareaAutosize  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.event_id,"event_desc")} defaultValue = {obj.event_desc}/>
                     </div>
                     <p style ={{fontWeight: 'bold'}}>Eligibilty:</p>
                     <select style = {{width:'300px',height:'50px',marginBottom:'15px'}} disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.event_id,"eligiblity")} defaultValue = {obj.eligiblity}>

@@ -19,6 +19,7 @@ import companyProfile from "./Profile/companyProfile";
 import companyViewProfile from "./Profile/companyViewProfile"
 import jobStudents from "./Students/jobStudents"
 import companyEvents from "./Events/companyEvents"
+import eventStudents from './Students/eventStudents';
 //Create a Main Component
 class Main extends Component {
     render(){
@@ -39,6 +40,7 @@ class Main extends Component {
                 <Route path = "/companyProfile" component = {companyProfile}/>
                 <Route path="/companyViewProfile/:id" component={companyViewProfile}/>
                 <Route path="/jobStudents/:id" component={jobStudents}/>
+                <Route path="/eventStudents/:id" component={eventStudents}/>
                 <Route path="/companyEvents" component={companyEvents}/>
             </div>
             </Provider>

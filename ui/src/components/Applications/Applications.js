@@ -113,6 +113,7 @@ class Applications extends Component {
 					<div  className="form-group" >
                     <select style = {{width:'90%',height:'25px'}} onChange = {(e)=>this.searchChangeHandler(e,"status")} placeholder = "status" defaultValue =''>
                     <option value="" disabled >Status</option>
+                    <option value="Declined">Accepted</option>
                       <option value="Pending">Pending</option>
                      <option value="Reviewed">Reviewed</option>
                      <option value="Declined">Declined</option>

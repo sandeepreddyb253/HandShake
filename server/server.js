@@ -5,6 +5,20 @@ var bodyParser = require('body-parser');
 var path = require('path');
 const util = require('util');
 var cors = require('cors');
+var CryptoJS = require("crypto-js");
+var multer = require('multer');
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+    cb(null, '/Users/sandy/CMPE273/HandshakeFiles/Resumes')
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'Resume.pdf')
+  }
+})
+
+var upload = multer({ storage: storage }).single('file')
 
 
 var connection = mysql.createConnection({
@@ -37,13 +51,17 @@ app.post('/auth', async function(request, response) {
     var password = request.body.password;
     var res = {}
 	if (username && password) {
-	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? AND `password` = ?', [username, password],async function(error, results) {
+	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? ', [username],async function(error, results) {
            //console.log(error);
 			if (results.length == 1) {
                 var id;
                 var role = results[0].role_name
                 console.log(results[0].role_name)
                 res.role = role;
+                var bytes  =await  CryptoJS.AES.decrypt(results[0].password, 'secretKey123');
+                var plaintext = await bytes.toString(CryptoJS.enc.Utf8);
+                console.log("decrypted text", plaintext);
+                if(plaintext === password){
                 if(role ==='student'){
                     
                     var sqlQuery = 'select * from students where fk_user_id = '+results[0].user_id;
@@ -62,6 +80,10 @@ app.post('/auth', async function(request, response) {
             //         'Content-Type' : 'text/plain'
             //     })
              response.send(res);;
+            }
+            else{
+                response.send("error")
+            }
 			} else {
                 console.log('Incorrect Username and/or Password!');
             }			
@@ -108,11 +130,27 @@ app.post('/register', async function(request, response) {
          response.end("succesfully saved");
     } );
 
+app.post('/uploadFile',async function(req,res){
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            console.log('error',err)
+            return res.status(500).json(err)
+        } else if (err) {
+            console.log('error',err)
+            return res.status(500).json(err)
+        }
+    console.log('response',res.file)
+   return res.status(200).send(req.file)
 
+ })
+})
 
 app.post('/saveApplication',async function(request,response){
     var jobId = request.body.jobId;
     var studentId = request.body.studentId;
+   
+
+    console.log('fileData:::')
 
     var dateNow = new Date();
     var dd = dateNow.getDate();
@@ -207,6 +245,7 @@ app.get('/profile/:id', function(request, response) {
 });
 
 
+
 app.get('/getJobStudents/:id', async function(request,response) {
     
     var jobStudentsQuery = "select * from map_student_job msj join students s on msj.fk_student_id = s.student_id where msj.fk_job_id ='"+request.params.id+"'";
@@ -218,6 +257,19 @@ app.get('/getJobStudents/:id', async function(request,response) {
     // values = [1]
      results = await getResults(studentsQuery);
      response.send(jobStudents); 
+});
+
+
+app.get('/getEventStudents/:id', async function(request,response) {    
+var jobStudentsQuery = "select * from map_student_event mse join students s on mse.fk_student_id = s.student_id where mse.fk_event_id ='"+request.params.id+"'";
+jobStudents = await getResults(jobStudentsQuery);
+console.log(jobStudents)
+
+
+//var studentsQuery = 'select * from students'
+// values = [1]
+ //results = await getResults(studentsQuery);
+ response.send(jobStudents); 
 });
 
 app.get('/getAllStudents',async function(request,response){
@@ -661,13 +713,13 @@ async function renderHomePage(request,response,jobPostings,data){
     var applicationsQuery = 'select * from map_student_job where fk_student_id = ?';
     results = await getResults(jobPostingsQuery);  
     studentApplications = await getResults(applicationsQuery,values);
-    console.log('All Job Applications::',studentApplications)
+    //console.log('All Job Applications::',studentApplications)
     job_ids = []
     await studentApplications.forEach(async obj=>{
        await job_ids.push(obj.fk_job_id)
-       console.log('Jaffa')
+       //console.log('Jaffa')
     })
-    console.log('jobIds:::',job_ids)
+    //console.log('jobIds:::',job_ids)
     results.forEach(async obj => {
         if(job_ids.includes(obj.job_id)){
             obj.status = 'Applied';

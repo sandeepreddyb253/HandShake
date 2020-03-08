@@ -3,7 +3,8 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { compareAsc, format } from 'date-fns'
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 class companyProfile extends Component {
     constructor(){
@@ -11,7 +12,9 @@ class companyProfile extends Component {
         this.initialState = {  
             companyObject : [],
             isProfileSaveEnabled : false,
-            isContactSaveEnabled:false
+            isContactSaveEnabled:false,
+            isPicSaveEnabled:false,
+            picData:''
         }
         this.state = this.initialState;
         
@@ -20,6 +23,7 @@ class companyProfile extends Component {
         this.cancelHandler = this.cancelHandler.bind(this);
         this.EditHandler = this.EditHandler.bind(this);
         this.EditContactHandler = this.EditContactHandler.bind(this);
+        this.EditPicHandler = this.EditPicHandler.bind(this);
     }  
 
     
@@ -31,7 +35,9 @@ class companyProfile extends Component {
                 console.log()
                 this.setState({
                     companyObject : this.state.companyObject.concat(response.data),
-                    isProfileSaveEnabled :false
+                    isProfileSaveEnabled :false,
+                    isContactSaveEnabled : false,
+                    isPicSaveEnabled:false
                 });
             }); 
     }
@@ -43,6 +49,12 @@ class companyProfile extends Component {
     EditContactHandler(){
         this.setState({
             isContactSaveEnabled:true})
+    }
+    EditPicHandler(){
+        this.setState({
+            isPicSaveEnabled:true,
+            picData :"Edit image"
+        })
     }
 
     changeHandler(e, id, name) {
@@ -74,7 +86,8 @@ class companyProfile extends Component {
                   console.log(response.status)
                   if(response.status === 200){
                     this.setState({
-                        isProfileSaveEnabled:false
+                        isProfileSaveEnabled:false,
+                        isContactSaveEnabled:false
                     }
                     )
                   }
@@ -96,7 +109,7 @@ class companyProfile extends Component {
         }
             
     }
-
+  
     render(){
         let contactDetails = this.state.companyObject.map(obj => {
             return(
@@ -127,7 +140,7 @@ class companyProfile extends Component {
                 <p style ={{fontWeight: 'bold'}}>Description:</p>
                 
                  <div className="form-group">
-                    <textarea  contenteditable ="true" style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"company_desc")} defaultValue = {obj.company_desc}/>
+                    <TextareaAutosize   style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isProfileSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.company_id,"company_desc")} defaultValue = {obj.company_desc}/>
                 </div>
                 <p style ={{fontWeight: 'bold'}}>City:</p>
                 
@@ -179,7 +192,10 @@ class companyProfile extends Component {
 			<div className="col-sm-3">
 				
 				<div className="well">
+                <button onClick= {this.EditPicHandler} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
 					 <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg")}></img> 
+                <button onClick= {(e)=>this.saveHandler()} hidden = {!this.state.isPicSaveEnabled} style = {{width:'75px'}}>Save</button>
+                <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isPicSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 					
 				</div>
 

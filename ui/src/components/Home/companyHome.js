@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { compareAsc, format } from 'date-fns'
+import TextareaAutosize from 'react-textarea-autosize';
 
 class companyHome extends Component {
     constructor(){
@@ -164,17 +164,17 @@ class companyHome extends Component {
 					<p style ={{fontWeight: 'bold'}}>Extra Description:</p>
 					
                     <div className="form-group">
-                        <textarea  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_desc")} defaultValue = {obj.job_long_desc}/>
+                        <TextareaAutosize  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_desc")} defaultValue = {obj.job_long_desc}/>
                     </div>
                     <p style ={{fontWeight: 'bold'}}>Additional Details:</p>
 					
                     <div className="form-group">
-                        <textarea  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_desc2")} defaultValue = {obj.job_long_desc2}/>
+                        <TextareaAutosize  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_desc2")} defaultValue = {obj.job_long_desc2}/>
                     </div>
                     <p style ={{fontWeight: 'bold'}}>Salary Details:</p>
 					
                     <div className="form-group">
-                        <textarea  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_dec3")} defaultValue = {obj.job_long_dec3}/>
+                        <TextareaAutosize  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"job_long_dec3")} defaultValue = {obj.job_long_dec3}/>
                     </div>
                     <p style ={{fontWeight: 'bold'}}>Skills Required:</p>
                     <div className="form-group">

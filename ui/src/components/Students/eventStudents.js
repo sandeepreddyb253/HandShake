@@ -5,55 +5,26 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns'
 
-class jobStudents extends Component {
+class eventStudents extends Component {
     constructor(props){
         super(props);
         this.initialState = {  
             students : [],
             redirect:'',
-            job_id : this.props.match.params.id,
+            event_id : this.props.match.params.id,
         }
         this.state = this.initialState;
-        this.changeHandler = this.changeHandler.bind(this)
         this.viewProfile = this.viewProfile.bind(this)
-        this.changeStatus = this.changeStatus.bind(this)
         
     }  
 
-    changeHandler(e,id,name){
-        const students = this.state.students
+    
 
-        students.map((student)=>{
-            if(student.map_application_id === id){
-                student[name] = e.target.value;
-            }
-        })
-    }
-
-    async changeStatus(id){
-        const students = this.state.students
-        var studentData
-        students.map((student)=>{
-            if(student.map_application_id === id){
-                studentData = student;
-            }
-        })
-       await axios.put('http://localhost:8080/updateJobStatus',studentData)
-        .then((response) => {
-        console.log(response)
-        if(response.status === 200){
-            alert(response.data)
-        }
-        })
-        .catch((error)=>{
-            alert(error);
-            console.log('error',error)
-        })
-    }
+    
 
     componentDidMount(){
-        console.log('+++++','in Job students')
-        axios.get('http://localhost:8080/getJobStudents/'+this.state.job_id)
+        console.log('+++++')
+        axios.get('http://localhost:8080/getEventStudents/'+this.state.event_id)
         .then((response) => {
         //update the state with the response data
         this.setState({
@@ -82,15 +53,8 @@ class jobStudents extends Component {
                         <p><span style = {{fontWeight:'bold'}}>Major: </span>{student.major}</p> 
                         <p> <span style = {{fontWeight:'bold'}}>College: </span>   {student.college_name}</p> 
                         <p><span style = {{fontWeight:'bold'}}>Skills: </span>   {student.skills}</p>
-                       
-                        <select style = {{width:'75%',height:'25px'}} onChange = {(e)=>this.changeHandler(e,student.map_application_id,"status")} placeholder = "College Name" defaultValue ={student.status} >
-                        <option value="Pending">Pending</option>
-                        <option value="Reviewed">Reviewed</option>
-                        <option value="Declined">Declined</option>
-                        <option value="Accepted">Accepted</option>
-                        </select>
-                        <button  style = {{float :'right',width :'100px',height:'30px',margin:'0px'}} onClick = {(e)=>this.viewProfile(student.student_id)}> View Profile</button>
-                        <button  style = {{float :'right',width :'120px',height:'30px',margin:'0px',marginRight:'5px'}} onClick = {(e)=>this.changeStatus(student.student_id)}> Update Status</button>
+                       <button  style = {{float :'right',width :'100px',height:'30px',margin:'0px'}} onClick = {(e)=>this.viewProfile(student.student_id)}> View Profile</button>
+                        
                         
 				</div>
 		        </div>    
@@ -106,7 +70,7 @@ class jobStudents extends Component {
                 {redirectVar}
                 
 			    <div>
-                    <h2>List of Applied Students</h2>
+                    <h2>List of Regsitered Students</h2>
                         
                             <div style = {{width:'85%'}}>
                              {details}
@@ -118,4 +82,4 @@ class jobStudents extends Component {
     }
 }
 //export Profile Component
-export default jobStudents;
+export default eventStudents;

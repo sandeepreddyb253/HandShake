@@ -5,6 +5,9 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import {register} from '../../ReduxModules/actions/index';
 import {connect} from 'react-redux';
+var CryptoJS = require("crypto-js");
+
+
 
 class Register extends Component {
   constructor(props) {
@@ -55,8 +58,10 @@ class Register extends Component {
   };
 
   passnameChangeHandler = e => {
+    var ciphertext = CryptoJS.AES.encrypt(e.target.value, 'secretKey123');
+    //console.log(ciphertext.toString())
     this.setState({
-      password: e.target.value
+      password: ciphertext.toString()
     });
   };
 

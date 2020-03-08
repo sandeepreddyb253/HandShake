@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import { compareAsc, format } from 'date-fns'
+import TextareaAutosize from 'react-textarea-autosize';
 
 class companyViewProfile extends Component {
     constructor(props){
@@ -33,6 +33,19 @@ class companyViewProfile extends Component {
     render(){
         
         //if not logged in go to login page
+        let contactDetails = this.state.companyObject.map(obj => {
+            return(
+                <div key ={obj.company_id}>
+                <p style ={{fontWeight: 'bold'}}>Email:</p>
+                <p>{obj.email}</p>
+                
+                <p style ={{fontWeight: 'bold'}}>Phone No:</p>
+                <p>{obj.phone_no}</p>
+                
+                
+                </div>
+            )
+        })
         
         let companyDetails =  this.state.companyObject.map(obj => {
             return(
@@ -40,11 +53,7 @@ class companyViewProfile extends Component {
                 <p style ={{fontWeight: 'bold'}}>Company Name:</p>
                 <p>{obj.company_name}</p>
                 <p style ={{fontWeight: 'bold'}}>Description:</p>
-                <p>{obj.company_desc}</p> 
-                 <p style ={{fontWeight: 'bold'}}>Email:</p>
-                 <p>{obj.email}</p>
-                <p style ={{fontWeight: 'bold'}}>Phone No:</p>
-                <p>{obj.phone_no}</p>
+                <TextareaAutosize disabled = "true" value = {obj.company_desc} /> 
                 <p style ={{fontWeight: 'bold'}}>City:</p>
                 <p>{obj.city}</p>
                 <p style ={{fontWeight: 'bold'}}>State:</p>
@@ -64,6 +73,8 @@ class companyViewProfile extends Component {
         
 
         return(
+            <div>
+                 <img style = {{height:'250px',marginTop:'-20px',width:'100%'}} src ={require("../Util/company.jpg")}></img>
             <div style = {{marginLeft: '25px'}}>
                 {redirectVar}
                 <div className="row">
@@ -84,10 +95,19 @@ class companyViewProfile extends Component {
 				</div>
 
 			</div>
-
+            <div className="col-sm-3">
+				
+            <div className="well">
+					<h2>contactDetails
+                    </h2>
+					{contactDetails}
+                    
+				</div>
+            </div>
             
 		</div> 
             </div> 
+            </div>
         )
     }
 }
