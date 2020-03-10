@@ -7,19 +7,32 @@ const util = require('util');
 var cors = require('cors');
 var CryptoJS = require("crypto-js");
 var multer = require('multer');
+var fs = require('fs')
 
 
-var storage = multer.diskStorage({
+var fileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
+    console.log('req in storage',req.query.id)
     cb(null, '/Users/sandy/CMPE273/HandshakeFiles/Resumes')
   },
   filename: function (req, file, cb) {
-    cb(null, 'Resume.pdf')
+    cb(null, req.query.studentId+'_'+req.query.jobId+'.pdf')
   }
 })
 
-var upload = multer({ storage: storage }).single('file')
+var studentProfileStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+    console.log('req in storage',req.query.studentId)
+    cb(null, '/Users/sandy/CMPE273/HandshakeFiles/students/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, req.query.studentId+'.jpg')
+  }
+})
 
+var imageUpload = multer({ storage: studentProfileStorage }).single('studentProfileStorage')
+
+var upload = multer({storage:fileStorage}).single('file')
 
 var connection = mysql.createConnection({
 	host     : 'localhost',
@@ -131,26 +144,40 @@ app.post('/register', async function(request, response) {
     } );
 
 app.post('/uploadFile',async function(req,res){
+    if(req.query.type === 'resume'){
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-            console.log('error',err)
+           // console.log('error',err)
             return res.status(500).json(err)
         } else if (err) {
-            console.log('error',err)
+           // console.log('error',err)
             return res.status(500).json(err)
         }
-    console.log('response',res.file)
+   // console.log('response',res.file)
    return res.status(200).send(req.file)
-
- })
+    })
+    }else if(req.query.type === 'studentProfilePic'){
+        console.log('Image uplaoding')
+        imageUpload(req, res, function (err) {
+            if (err instanceof multer.MulterError) {
+                console.log('error',err)
+                return res.status(500).json(err)
+            } else if (err) {
+               console.log('error',err)
+                return res.status(500).json(err)
+            }
+       console.log('response',res.file)
+       return res.status(200).send(req.file)
+    })
+}
 })
 
 app.post('/saveApplication',async function(request,response){
     var jobId = request.body.jobId;
     var studentId = request.body.studentId;
-   
+   var resumePath = request.body.resumePath;
 
-    console.log('fileData:::')
+    console.log('fileData:::',resumePath)
 
     var dateNow = new Date();
     var dd = dateNow.getDate();
@@ -160,7 +187,7 @@ app.post('/saveApplication',async function(request,response){
 
     var application_date = yyyy + '-' + mm + '-' +dd;
 
-    var applicationsQuery = "insert into map_student_job (fk_student_id,fk_job_id ,application_date,status) Values ('" + studentId + "','" + jobId +"','" + application_date +"','" + "Pending" + "')";
+    var applicationsQuery = "insert into map_student_job (fk_student_id,fk_job_id ,application_date,status,resume_path) Values ('" + studentId + "','" + jobId +"','" + application_date +"','" + "Pending" +"','" + resumePath +"')";
 
     results = await getResults(applicationsQuery);
     console.log(results);
@@ -232,7 +259,7 @@ app.get('/applications/:id', async function(request, response) {
 app.get('/profile/:id', function(request, response) {
    if (true) {
         var student_id = request.params.id;
-        console.log('===', student_id)
+        //console.log('===', student_id)
        var studentObject;
        var stduentEducation;
        var studentExperience;
@@ -517,14 +544,15 @@ app.put('/profile/editExperience/:id', function(request, response) {
 
  app.put('/profile/editstudentObject/:id', function(request, response) {
     if (true) {
-       
+        var filePath = request.query.filePath
+        console.log('filePath::',filePath)
         const studentObjects = request.body;
         console.log(studentObjects);
         var student_id = studentObjects[0].student_id;
         studentObjects.forEach(async obj => {
             if(obj.student_id){
-            var values  = [obj.first_name,obj.last_name,obj.city,obj.email,obj.phone_no, obj.skills,obj.major,obj.objective,obj.college_name,student_id]
-            var updateQuery = 'update students set first_name =?,last_name = ?,city=?, email = ?, phone_no = ?,skills = ?,major=?,objective =?,college_name=? where student_id = ?';
+            var values  = [obj.first_name,obj.last_name,obj.city,obj.email,obj.phone_no, obj.skills,obj.major,obj.objective,obj.college_name,filePath,student_id]
+            var updateQuery = 'update students set first_name =?,last_name = ?,city=?, email = ?, phone_no = ?,skills = ?,major=?,objective =?,college_name=?,profile_path=? where student_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }
@@ -631,13 +659,13 @@ app.get('/companyProfile/:id',async function(request,response){
  })
 
 async function renderProfilePage(request,response, studentObject,stduentEducation,studentExperience,student_id){
-    console.log('studentId: ',student_id)     
+   // console.log('studentId: ',student_id)     
     var studentsQuery = 'select * from students where student_id ='+student_id
         values = [1]
-        console.log('studentId: ',student_id)
+        //console.log('studentId: ',student_id)
         results = await getResults(studentsQuery);        
         studentObject = await results[0];
-        console.log(studentObject.dob);
+       // console.log(studentObject.dob);
         var studentsEduQuery = "select * from student_educational_details where fk_student_id = " + studentObject.student_id;
         var studentExpQuery = "select * from student_experience_details where fk_student_id = " + studentObject.student_id;
         results = await getResults(studentsEduQuery);
@@ -719,7 +747,7 @@ async function renderHomePage(request,response,jobPostings,data){
        await job_ids.push(obj.fk_job_id)
        //console.log('Jaffa')
     })
-    //console.log('jobIds:::',job_ids)
+    console.log('jobIds:::',job_ids)
     results.forEach(async obj => {
         if(job_ids.includes(obj.job_id)){
             obj.status = 'Applied';

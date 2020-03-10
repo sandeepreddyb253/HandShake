@@ -42,8 +42,22 @@ export function saveEducation(payload){
 
 export function saveStudentObject(payload){
 
-  return function(dispatch){
-    axios.put('http://localhost:8080/profile/editstudentObject/:'+payload[0].student_id, payload)
+  return async function(dispatch){
+    console.log('fileData::',payload[0].fileData)
+    var resumePath
+    await axios.post('http://localhost:8080/uploadFile/?studentId='+payload[0].student_id+'&type=studentProfilePic',payload[0].fileData)
+        .then(response => {
+            console.log("Status Code : ",response);
+            if(response.status === 200){
+                 resumePath = response.data.path
+                
+            }
+            else{
+                console.log('Error in saving application');
+            }
+        });
+    console.log('path:',resumePath)
+    await axios.put('http://localhost:8080/profile/editstudentObject/:'+payload[0].student_id+'/?filePath='+resumePath, payload)
               .then((response)=>dispatch({
                 type: SAVE_STUD_OBJECT,
                 payload : response

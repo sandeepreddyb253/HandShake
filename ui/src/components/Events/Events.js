@@ -140,7 +140,8 @@ saveRegistration(event_id){
                 <div className="row" key = {event.fk_event_id}>
                 <div className = "well" style = {{height:'100px',width:'90%'}}>
 				<div className="col-sm-8" style ={{width:'80%'}}>
-						<h3>{event.event_name}</h3>
+						<h4>{event.event_name}</h4>
+                        <p>{event.event_time}</p>
                         
 				</div>
                 <div className = "col-sm-3" style ={{width:'20%'}}>
@@ -170,18 +171,7 @@ saveRegistration(event_id){
         return(
             <div>
                 {redirectVar}
-                <div>
-				
-				<div className="well">
-					<h4>Search
-                    </h4>
-					<div  className="form-group" >
-                    <input type = "text" style = {{width:'75%',height:'25px',borderRadius:'7px'}} onChange = {(e)=>this.searchChangeHandler(e,"event_name")} placeholder = "Event Name" defaultValue =''/>
-                    <button onClick= {(e)=>this.searchHandler()}  disabled = {!this.state.searchEnabled} style = {{width:'75px'}}>Search</button>
-                    <button onClick= {(e)=>this.cancelHandler()}  style = {{width:'75px',marginLeft:'5px'}}>Reset</button>
-                     </div>
-            	</div>
-                </div>
+                
                 <div className="col-sm-8">
                     <h2 style = {{marginLeft:'50px'}}>List of All Events</h2>
                         
@@ -189,10 +179,22 @@ saveRegistration(event_id){
                              {details}
                             </div>
                 </div> 
+                <div>
+				
+				<div className="col-sm-3" style = {{marginTop:'50px'}}>
+					<h4>Search
+                    </h4>
+					<div  className="form-group" >
+                    <input type = "text" style = {{width:'90%',height:'25px',borderRadius:'7px'}} onChange = {(e)=>this.searchChangeHandler(e,"event_name")} placeholder = "Event Name" defaultValue =''/>
+                    <button onClick= {(e)=>this.searchHandler()}  disabled = {!this.state.searchEnabled} style = {{width:'75px'}}>Search</button>
+                    <button onClick= {(e)=>this.cancelHandler()}  style = {{width:'75px',marginLeft:'5px'}}>Reset</button>
+                     </div>
+            	</div>
+                </div>
                 <div className="col-sm-3">
                     <h2>Your Upcoming Events</h2>
                         
-                            <div>
+                            <div >
                              {studentEventsDetails}
                             </div>
                 </div>

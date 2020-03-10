@@ -23,7 +23,8 @@ class Profile extends Component {
             isEduAddEnabled:false,
             isExpAddEnabled:false,
             newStudentEducation:[],
-            newStudentExperience:[]
+            newStudentExperience:[],
+            fileData:null
         }
         this.state = this.initialState;
         
@@ -33,7 +34,7 @@ class Profile extends Component {
 
         this.AddExperience = this.AddExperience.bind(this);
         this.EditExperience = this.EditExperience.bind(this);
-        
+        this.onFileChange = this.onFileChange.bind(this)
         
         this.AddEducation = this.AddEducation.bind(this);
         this.EditEducation = this.EditEducation.bind(this);
@@ -81,6 +82,22 @@ class Profile extends Component {
       await  this.props.fetchProfile(cookie.load('cookie').split(':')[1]);
         this.setState(this.initialState)
     }
+    }
+
+    onFileChange(e,id){
+        const studObj = this.props?.studentObject;
+        console.log('in edit handler', studObj)
+        studObj.map((obj)=>{
+            if(obj.student_id ===id ){
+                let fileData = new FormData()
+             console.log('fileData in state',this.state.fileData)
+                fileData.append("studentProfileStorage", e.target.files[0])
+        
+                obj.fileData = fileData;
+                console.log(e.target.files[0]);
+            }
+        })
+
     }
 
     EditExperience(){
@@ -290,11 +307,23 @@ class Profile extends Component {
             )
         })
 
+       let profilePic =  this.props.studentObject?.map(obj=>{
+           if(obj.profile_path){
+               return(
+                <img style = {{width:'75%'}} src ={"file://"+(obj.profile_path)}></img>
+               )
+           }else{
+               return(
+                <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg") }></img>
+               )
+           }
+       })
 
         let basicDetails = this.props.studentObject?.map(obj=>{
             return (
                 <div key = {obj.student_id} className = "form-group">
-                    <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg") }></img> 
+                    {profilePic}
+                    <input disabled = {!this.state.isBasicSaveEnabled} type="file" name="file"  onChange={(e)=>this.onFileChange(e,obj.student_id)} />
                     
                     <p style = {{fontWeight: 'bold'}}>First Name:</p>
 					
