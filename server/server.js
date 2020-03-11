@@ -13,7 +13,7 @@ var fs = require('fs')
 var fileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
     console.log('req in storage',req.query.id)
-    cb(null, '/Users/sandy/CMPE273/HandshakeFiles/Resumes')
+    cb(null, './../ui/src/HandshakeFiles/Resumes')
   },
   filename: function (req, file, cb) {
     cb(null, req.query.studentId+'_'+req.query.jobId+'.pdf')
@@ -23,16 +23,28 @@ var fileStorage = multer.diskStorage({
 var studentProfileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
     console.log('req in storage',req.query.studentId)
-    cb(null, '/Users/sandy/CMPE273/HandshakeFiles/students/')
+    cb(null, './../ui/src/HandshakeFiles/students/')
   },
   filename: function (req, file, cb) {
     cb(null, req.query.studentId+'.jpg')
   }
 })
 
+var companyProfileStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+    console.log('req in storage',req.query.studentId)
+    cb(null, './../ui/src/HandshakeFiles/company/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, req.query.companyId+'.jpg')
+  }
+})
+
 var imageUpload = multer({ storage: studentProfileStorage }).single('studentProfileStorage')
 
 var upload = multer({storage:fileStorage}).single('file')
+
+var companyImageUpload = multer({storage:companyProfileStorage}).single('companyProfileStorage')
 
 var connection = mysql.createConnection({
 	host     : 'localhost',
@@ -73,7 +85,7 @@ app.post('/auth', async function(request, response) {
                 res.role = role;
                 var bytes  =await  CryptoJS.AES.decrypt(results[0].password, 'secretKey123');
                 var plaintext = await bytes.toString(CryptoJS.enc.Utf8);
-                console.log("decrypted text", plaintext);
+                //console.log("decrypted text", plaintext);
                 if(plaintext === password){
                 if(role ==='student'){
                     
@@ -169,6 +181,19 @@ app.post('/uploadFile',async function(req,res){
        console.log('response',res.file)
        return res.status(200).send(req.file)
     })
+}else if(req.query.type === 'companyProfilePic'){
+    console.log('Image uplaoding')
+    companyImageUpload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            console.log('error',err)
+            return res.status(500).json(err)
+        } else if (err) {
+           console.log('error',err)
+            return res.status(500).json(err)
+        }
+   console.log('response',res.file)
+   return res.status(200).send(req.file)
+})
 }
 })
 
@@ -303,6 +328,7 @@ app.get('/getAllStudents',async function(request,response){
     var first_name = request.query.first_name
     var college_name = request.query.college_name
     var major = request.query.major
+    var skills = request.query.skills
     let values = [college_name,major];
     let parameter = false;
     if((first_name!= '') || (college_name!='' )|| (major!='')){
@@ -316,7 +342,7 @@ app.get('/getAllStudents',async function(request,response){
             }
             if(college_name != 'undefined'){
                 if(parameter){
-                    studentsQuery.concat(" and ")
+                    studentsQuery= studentsQuery.concat(" and ")
                     
                 }
                 studentsQuery = studentsQuery.concat(" college_name = '"+ college_name+"'")
@@ -325,10 +351,19 @@ app.get('/getAllStudents',async function(request,response){
             }
             if(major != 'undefined'){
                 if(parameter){
-                    studentsQuery.concat(" and ")
+                    studentsQuery =  studentsQuery.concat(" and ")
                 }
                 studentsQuery = studentsQuery.concat(" major = '"+major+"'")
-               // values.concat(major)
+               parameter = true;
+            }
+            if(skills != 'undefined' && skills!= ''){
+                if(parameter){
+                    studentsQuery =   studentsQuery.concat(" and ")
+                }
+                studentsQuery= studentsQuery.concat(" skills like '%"+skills+"%' ")
+                console.log('appending',studentsQuery)
+                //values.concat(first_name)
+                
             }
         console.log(studentsQuery)
        // let values = [first_name,college_name,major]
@@ -439,7 +474,9 @@ app.put('/saveJobs',async function(request, response) {
             console.log(results);
             }else{
                 console.log('inserting experince')
-                var insertQuery = "insert into job_postings (postion,fk_company_id,job_desc,job_long_desc,job_long_desc2,job_long_dec3,job_location,deadline,category,skills_required,company_name) values ('" + job.postion + "','"+job.fk_company_id + "','" +job.job_desc+"','" + job.job_long_desc + "','" +job.job_long_desc2 + "','" +job.job_long_dec3 + "','" +job.job_location + "','" +job.deadline + "','" +job.category + "','" +job.skills_required +"','Company Details')";
+                var companyQuery = "select * from company where company_id = '"+job.fk_company_id+"'"
+                companyResults = await getResults(companyQuery)               
+                var insertQuery = "insert into job_postings (postion,fk_company_id,job_desc,job_long_desc,job_long_desc2,job_long_dec3,job_location,deadline,category,skills_required,company_name) values ('" + job.postion + "','"+job.fk_company_id + "','" +job.job_desc+"','" + job.job_long_desc + "','" +job.job_long_desc2 + "','" +job.job_long_dec3 + "','" +job.job_location + "','" +job.deadline + "','" +job.category + "','" +job.skills_required +"','"+ companyResults[0].company_name+"')";
                 results = await getResults(insertQuery,values);
             }
 
@@ -504,13 +541,13 @@ app.put('/profile/editExperience/:id', function(request, response) {
          experiences.forEach(async exp => {
             if(exp.student_exp_id){
                 console.log('updating experience')
-            var values  = [exp.company, exp.postion,exp.work_desc,exp.work_location,exp.student_exp_id]
-            var updateQuery = 'update student_experience_details set company = ?, postion = ?, work_desc = ? ,work_location = ?  where student_exp_id = ?';
+            var values  = [exp.company, exp.postion,exp.work_desc,exp.work_location,exp.from_date,exp.to_date,exp.student_exp_id]
+            var updateQuery = 'update student_experience_details set company = ?, postion = ?, work_desc = ? ,work_location = ?,from_date =?,to_date=?  where student_exp_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }else{
                 console.log('inserting experince')
-                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location + "')";
+                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location,from_date,to_date) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location + "','" +exp.from_date +"','"+"','" +exp.to_date +"')";
                 results = await getResults(insertQuery,values);
             }
         })
@@ -575,12 +612,12 @@ app.put('/profile/editExperience/:id', function(request, response) {
         var student_id = educations[0].fk_student_id;
         educations.forEach(async edu => {
             if(edu.student_education_id){
-            var values  = [edu.college, edu.course,edu.student_education_id]
-            var updateQuery = 'update student_educational_details set college = ?, course = ?  where student_education_id = ?';
+            var values  = [edu.college, edu.course,edu.grad_date,edu.gpa,edu.student_education_id]
+            var updateQuery = 'update student_educational_details set college = ?, course = ?,grad_date =?,gpa=?  where student_education_id = ?';
             results = await getResults(updateQuery,values);
             console.log(results);
             }else{
-                var insertQuery = "insert into student_educational_details (fk_student_id,college,course) values ('" + student_id + "','"+edu.college+"','" + edu.course + "')";
+                var insertQuery = "insert into student_educational_details (fk_student_id,college,course,grad_date,gpa) values ('" + student_id + "','"+edu.college+"','" + edu.course +  "','"+edu.grad_date+"','" + "','"+edu.gpa +"')";
                 results = await getResults(insertQuery,values);
             }
         })
@@ -642,10 +679,11 @@ app.get('/companyProfile/:id',async function(request,response){
 
  app.put('/companyProfile/:id',async function (request,response){
     var data = request.params.id;
+    console.log('Jaffa')
     var companyObjects =  request.body;
     companyObjects.forEach(async companyObject =>{
-    var companyProfileQuery = "update company set company_name = ?, company_desc = ?,email = ?,phone_no = ?, city = ?, state= ?,country = ? where company_id = ?"
-    var values = [companyObject.company_name,companyObject.company_desc,companyObject.email,companyObject.phone_no,companyObject.city,companyObject.state,companyObject.country,companyObject.company_id]
+    var companyProfileQuery = "update company set company_name = ?, company_desc = ?,email = ?,phone_no = ?, city = ?, state= ?,country = ?,profile_path=? where company_id = ?"
+    var values = [companyObject.company_name,companyObject.company_desc,companyObject.email,companyObject.phone_no,companyObject.city,companyObject.state,companyObject.country,companyObject.resumePath,companyObject.company_id]
      results = await getResults(companyProfileQuery,values);  
      //console.log(results[1].job_desc);
      companyProfile= await results;
@@ -804,7 +842,7 @@ async function renderApplicationsData(request,response,data,status){
       app =  await modifyData(app)
     }
     results = await studentApplications
-    console.log('modified result:',results);
+    //console.log('modified result:',results);
     response.send(results);
 }
 
@@ -820,7 +858,7 @@ async function modifyData(app){
         var companyValues = [job[0].fk_company_id];
         company = await getResults(companyQuery,companyValues);
         app.company_name =  company[0].company_name;
-        console.log('apppp:',app)
+        //console.log('apppp:',app)
         return app
 }
 

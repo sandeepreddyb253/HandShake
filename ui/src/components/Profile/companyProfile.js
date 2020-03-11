@@ -41,6 +41,22 @@ class companyProfile extends Component {
                 });
             }); 
     }
+    onFileChange(e,id){
+        const compObj = this.state.companyObject;
+        console.log('in edit handler', compObj)
+        compObj.map((obj)=>{
+            if(obj.company_id ===id ){
+                let fileData = new FormData()
+                //console.log('fileData in state',this.state.fileData)
+                fileData.append("companyProfileStorage", e.target.files[0])
+        
+                obj.fileData = fileData;
+               // console.log(e.target.files[0]);
+            }
+        })
+
+    }
+    
     
     EditHandler(){
         this.setState({
@@ -77,17 +93,33 @@ class companyProfile extends Component {
     
     
 
-    saveHandler(type){
+    async saveHandler(type){
     
         console.log('Save these ',this.state.companyObject)
+        var resumePath;
+        await axios.post('http://localhost:8080/uploadFile/?companyId='+this.state.companyObject[0].company_id+'&type=companyProfilePic',this.state.companyObject[0].fileData)
+        .then(response => {
+            console.log("Status Code : ",response);
+            if(response.status === 200){
+                resumePath = response.data.path
+                console.log('path:',resumePath)
+            }
+            else{
+                console.log('Error in saving application');
+            }
+        });
 
-        axios.put('http://localhost:8080/companyProfile/:'+this.state.companyObject[0].company_id, this.state.companyObject)
+        const companyObj = this.state.companyObject
+        companyObj[0].resumePath = resumePath
+
+       await axios.put('http://localhost:8080/companyProfile/:'+this.state.companyObject[0].company_id, companyObj)
               .then((response)=>{
                   console.log(response.status)
                   if(response.status === 200){
                     this.setState({
                         isProfileSaveEnabled:false,
-                        isContactSaveEnabled:false
+                        isContactSaveEnabled:false,
+                        isPicSaveEnabled:false
                     }
                     )
                   }
@@ -161,7 +193,33 @@ class companyProfile extends Component {
 
         )
         })
+
+        let profilePic =  this.state.companyObject?.map(obj=>{
+            if(obj.company_name === 'Apple Inc.,'){
+                var path = "../"+obj.profile_path
+                console.log('path::::',path.toString())
+              return(<div key = {obj.student_id} className="wrapper">
+                  
+                 <img src={require("../../HandshakeFiles/company/2.jpg")} className="image--cover"></img>
+                 </div>
+                )
+            }else{
+                return(
+                 <div className="wrapper">
+                 <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>
+                 </div>
+                 )
+            }
+        })
         
+        let imageDetails =  this.state.companyObject.map(obj => {
+            return(
+               <div key ={obj.company_id}> 
+                {profilePic}
+               <input disabled = {!this.state.isPicSaveEnabled} type="file" name="file"  onChange={(e)=>this.onFileChange(e,obj.company_id)} />
+                </div>
+            )})
+
         let redirectVar = null;
         if(!cookie.load('cookie')){
             redirectVar = <Redirect to= "/login"/>
@@ -191,9 +249,9 @@ class companyProfile extends Component {
 			</div>
 			<div className="col-sm-3">
 				
-				<div className="well">
-                <button onClick= {this.EditPicHandler} style = {{width:'45px',float:'right',height:'15px',fontSize:'12px'}} > Edit</button>
-					 <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg")}></img> 
+				<div className="well" style = {{height:'350px'}}>
+                <button onClick= {this.EditPicHandler} style = {{width:'45px',float:'right',height:'20px',fontSize:'12px'}} > Edit</button>
+                {imageDetails}
                 <button onClick= {(e)=>this.saveHandler()} hidden = {!this.state.isPicSaveEnabled} style = {{width:'75px'}}>Save</button>
                 <button onClick= {(e)=>this.cancelHandler()} hidden = {!this.state.isPicSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>
 					

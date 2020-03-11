@@ -199,7 +199,7 @@ class companyHome extends Component {
                     <p style ={{fontWeight: 'bold'}}>Deadline:</p>
                     <div className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.job_id,"deadline")} defaultValue = {obj.deadline}/>
-                         <button onClick= {(e)=>this.viewStudents(obj.job_id)}  style = {{width:'75px',float:'right'}}>Students</button> 
+                         <button onClick= {(e)=>this.viewStudents(obj.job_id)}  style = {{width:'75px',float:'right',marginTop:'-20px'}}>Students</button> 
                     </div>
                     <button onClick= {(e)=>this.saveHandler(e,obj.job_id)} hidden = {!obj.isSaveEnabled} style = {{width:'75px'}}>Save</button>
                     <button onClick= {(e)=>this.cancelHandler(obj.job_id)} hidden = {!obj.isSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>

@@ -27,10 +27,10 @@ class Home extends Component {
         this.closeModal = this.closeModal.bind(this);
     }  
     //get the books data from backend  
-    componentDidMount(){
+   async componentDidMount(){
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/home/'+data)       
+       await axios.get('http://localhost:8080/home/'+data)       
          .then((response) => {
                 //update the state with the response data
                 this.setState({

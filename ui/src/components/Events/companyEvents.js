@@ -170,7 +170,7 @@ class companyEvents extends Component {
                      <p style ={{fontWeight: 'bold'}}>Event Time:</p>
                     <div className="form-group">
                     <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!obj.isSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.event_id,"event_time")} defaultValue = {obj.event_time}/>
-                         <button onClick= {(e)=>this.viewStudents(obj.event_id)}  style = {{width:'75px',float:'right'}}>Students</button> 
+                         <button onClick= {(e)=>this.viewStudents(obj.event_id)}  style = {{width:'75px',float:'right',marginTop:'-20px'}}>Students</button> 
                     </div>
                     <button onClick= {(e)=>this.saveHandler(e,obj.event_id)} hidden = {!obj.isSaveEnabled} style = {{width:'75px'}}>Save</button>
                     <button onClick= {(e)=>this.cancelHandler(obj.event_id)} hidden = {!obj.isSaveEnabled} style = {{width:'75px',marginLeft:'5px'}}>Cancel</button>

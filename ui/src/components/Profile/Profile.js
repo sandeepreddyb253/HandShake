@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns';
 import {fetchProfile,saveExperience,saveEducation, saveStudentObject, deleteExperience, deleteEducation} from '../../ReduxModules/actions/index';
 import {connect} from 'react-redux';
+import Img from 'react-image'
 
 class Profile extends Component {
     constructor(){
@@ -261,9 +262,11 @@ class Profile extends Component {
 
     //get the books data from backend  
     async componentDidMount(){
+        if(cookie.load('cookie')){
         var value = cookie.load('cookie').split(':')[1]
 
         await this.props.fetchProfile(value);
+        }
             
     }
 
@@ -308,14 +311,20 @@ class Profile extends Component {
         })
 
        let profilePic =  this.props.studentObject?.map(obj=>{
-           if(obj.profile_path){
-               return(
-                <img style = {{width:'75%'}} src ={"file://"+(obj.profile_path)}></img>
+           if(obj.first_name === 'Sandeep'){
+               var path = "../"+obj.profile_path
+               console.log('path::::',path.toString())
+             return(<div key = {obj.student_id} className="wrapper">
+                 
+                <img src={require("../../HandshakeFiles/students/1.jpg")} className="image--cover"></img>
+                </div>
                )
            }else{
                return(
-                <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg") }></img>
-               )
+                <div className="wrapper">
+                <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>
+                </div>
+                )
            }
        })
 
@@ -351,6 +360,7 @@ class Profile extends Component {
                     <option value="UFL">UFL</option>
                     <option value="UTD">UTD</option>
                     <option value="Stanford">Stanford</option>
+                    <option value="Stanford">Hogwarts</option>
                     </select>
                     
                     <p style = {{fontWeight: 'bold'}}>City:</p>
@@ -381,10 +391,11 @@ class Profile extends Component {
              <div className="form-group">
                 <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"course","newEducation")} defaultValue = ''/>
             </div>
-            <p style ={{fontWeight: 'bold'}}>Expected graduation Date:</p>
+            <p style ={{fontWeight: 'bold'}}><span> Graduation Date:</span> <span style = {{marginLeft:'310px'}}> GPA: </span></p>
             
             <div className="form-group">
-                <input  style ={{width:'90%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"grad_date","newEducation")} defaultValue = ''/>
+                <input  style ={{width:'45%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"grad_date","newEducation")} defaultValue = ''/>
+             <input  style ={{width:'30%',borderRadius:'7px',marginLeft:'25px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,undefined,"gpa","newEducation")} defaultValue = ''/>
             </div>
             <button onClick= {(e)=>this.deleteHandler(undefined,"newEducation")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
             <hr
@@ -409,10 +420,11 @@ class Profile extends Component {
                      <div className="form-group">
                         <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"course","education")} defaultValue = {obj.course}/>
                     </div>
-					<p style ={{fontWeight: 'bold'}}>Expected graduation Date:</p>
+					<p style ={{fontWeight: 'bold'}}><span> Graduation Date:</span> <span style = {{marginLeft:'310px'}}> GPA: </span></p>
 					
                     <div className="form-group">
-                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"grad_date","education")} defaultValue = {obj.grad_date}/>
+                        <input  style ={{width:'45%',borderRadius:'7px'}} type = "date" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"grad_date","education")} defaultValue = {obj.grad_date}/>
+                        <input  style ={{width:'30%',borderRadius:'7px',marginLeft:'25px'}} type = "text" disabled={!this.state.isEduSaveEnabled} onChange = {(e)=>this.changeHandler(e,obj.student_education_id,"gpa","education")} defaultValue = {obj.gpa}/>
                     </div>
                     <button onClick= {(e)=>this.deleteHandler(obj.student_education_id,"Education")} hidden = {!this.state.isEduSaveEnabled} style = {{width:'75px',float:'right',marginTop:'40px'}}>Delete</button>
                     <hr

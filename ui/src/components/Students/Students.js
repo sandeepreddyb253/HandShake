@@ -46,7 +46,7 @@ class Students extends Component {
     searchHandler(){
         console.log('search with these', this.state.searchObject)
        
-        axios.get('http://localhost:8080/getAllStudents/?first_name='+this.state.searchObject.first_name+'&major='+this.state.searchObject.major+'&college_name='+this.state.searchObject.college_name)
+        axios.get('http://localhost:8080/getAllStudents/?first_name='+this.state.searchObject.first_name+'&major='+this.state.searchObject.major+'&college_name='+this.state.searchObject.college_name+'&skills='+this.state.searchObject.skills)
                 .then((response) => {
                 this.setState(this.initialState);
                     //update the state with the response data
@@ -134,6 +134,7 @@ class Students extends Component {
                         <option value="UTD">UTD</option>
                         <option value="Stanford">Stanford</option>
                         </select>
+                        <input  style ={{width:'90%',borderRadius:'7px'}} type = "text" onChange = {(e)=>this.changeHandler(e,"skills")} placeholder = "Skills" defaultValue =''/>
                         <button onClick= {(e)=>this.searchHandler()}  disabled = {!this.state.searchEnabled} style = {{width:'75px'}}>Search</button>
                     <button onClick= {(e)=>this.cancelHandler()}  style = {{width:'75px',marginLeft:'5px'}}>Reset</button>
                      </div>
