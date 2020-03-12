@@ -15,7 +15,7 @@ class Profile extends Component {
             student_id : this.props.match.params.id,
         }
         this.state = this.initialState;
-        this.profilePic = this.profilePic.bind(this)
+        //this.profilePic = this.profilePic.bind(this)
         
         
     }  
