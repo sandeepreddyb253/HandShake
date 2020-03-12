@@ -75,6 +75,7 @@ app.post('/auth', async function(request, response) {
 	var username = request.body.username;
     var password = request.body.password;
     var res = {}
+    console.log('request in auth')
 	if (username && password) {
 	    connection.query('SELECT * FROM `lu_user` WHERE `user_name` = ? ', [username],async function(error, results) {
            //console.log(error);
@@ -922,3 +923,4 @@ app.get("/file/:name", (req, res) => {
     }
    });
    
+   module.exports = app
