@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import TextareaAutosize from 'react-textarea-autosize';
+import {backend} from '../../webConfig'
 
 class companyEvents extends Component {
     constructor(){
@@ -50,7 +51,7 @@ class companyEvents extends Component {
     cancelHandler(e,id){
         var data = cookie.load('cookie').split(':')[1]
         this.setState(this.initialState)
-        axios.get('http://localhost:8080/companyEvents/'+data)
+        axios.get({backend}+'companyEvents/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -109,7 +110,7 @@ class companyEvents extends Component {
 
             })
     console.log('data in save handler', data)        
-   await axios.put('http://localhost:8080/saveEvents/', data)
+   await axios.put({backend}+'saveEvents/', data)
               .then((response)=>{
                   console.log(response.status)
                   if(response.status === 200){
@@ -126,7 +127,7 @@ class companyEvents extends Component {
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
         console.log(data)
-        axios.get('http://localhost:8080/companyevents/'+data)
+        axios.get({backend}+'/companyevents/'+data)
         .then((response) => {
         this.setState({
             events : this.state.events.concat(response.data)

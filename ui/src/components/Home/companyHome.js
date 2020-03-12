@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import TextareaAutosize from 'react-textarea-autosize';
+import {backend} from '../../webConfig'
 
 class companyHome extends Component {
     constructor(){
@@ -55,7 +56,7 @@ class companyHome extends Component {
     cancelHandler(e,id){
         var data = cookie.load('cookie').split(':')[1]
         this.setState(this.initialState)
-        axios.get('http://localhost:8080/companyJobPostings/'+data)
+        axios.get({backend}+'companyJobPostings/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -114,7 +115,7 @@ class companyHome extends Component {
 
             })
     console.log('data in save handler', data)        
-   await axios.put('http://localhost:8080/saveJobs/', data)
+   await axios.put({backend}+'saveJobs/', data)
               .then((response)=>{
                   console.log(response.status)
                   if(response.status === 200){
@@ -131,7 +132,7 @@ class companyHome extends Component {
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
         console.log(data)
-        axios.get('http://localhost:8080/companyJobPostings/'+data)
+        axios.get({backend}+'companyJobPostings/'+data)
         .then((response) => {
         this.setState({
             jobPostings : this.state.jobPostings.concat(response.data)

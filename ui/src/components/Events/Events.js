@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Popup from "reactjs-popup";
+import {backend} from "../../webConfig"
 
 class Events extends Component {
     constructor(){
@@ -23,7 +24,7 @@ class Events extends Component {
     componentDidMount(){
         if(cookie.load('cookie')){
             var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/events/'+data)
+        axios.get({backend}+'events/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -49,7 +50,7 @@ cancelHandler(){
     })
     if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
-    axios.get('http://localhost:8080/events/'+data)
+    axios.get({backend}+'events/'+data)
             .then((response) => {
             //update the state with the response data
             this.setState({
@@ -62,7 +63,7 @@ cancelHandler(){
 
 searchHandler(){
     var data = cookie.load('cookie').split(':')[1]
-    axios.get('http://localhost:8080/events/'+data+'/?event_name=' +this.state.searchObject.event_name)
+    axios.get({backend}+'events/'+data+'/?event_name=' +this.state.searchObject.event_name)
             .then((response) => {
             this.setState({
                 events:[]
@@ -86,7 +87,7 @@ saveRegistration(event_id){
             event.disable = 'true'
            }
        })
-       axios.post('http://localhost:8080/saveRegister',data)
+       axios.post({backend}+'saveRegister',data)
        .then(response => {
            console.log("Status Code : ",response.status);
            if(response.status === 200){

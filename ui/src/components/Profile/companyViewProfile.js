@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import TextareaAutosize from 'react-textarea-autosize';
+import {backend} from '../../webConfig'
 
 class companyViewProfile extends Component {
     constructor(props){
@@ -19,13 +20,13 @@ class companyViewProfile extends Component {
 
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return "http://localhost:8080/file/" + fileName+'/?role=company';
+        return {backend}+"file/" + fileName+'/?role=company';
     };
     
     
     componentDidMount(){
         var data = this.state.company_id
-        axios.get('http://localhost:8080/companyProfile/'+data)
+        axios.get({backend}+'companyProfile/'+data)
                 .then((response) => {
                 console.log()
                 this.setState({

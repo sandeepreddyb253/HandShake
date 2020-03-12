@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns'
+import {backend} from "../../webConfig"
 
 class Profile extends Component {
     constructor(props){
@@ -22,12 +23,12 @@ class Profile extends Component {
 
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return "http://localhost:8080/file/" + fileName+'/?role=students';
+        return {backend}+"file/" + fileName+'/?role=students';
     };
 
     componentDidMount(){
         console.log('+++++')
-        axios.get('http://localhost:8080/profile/'+ this.state.student_id)
+        axios.get({backend}+'profile/'+ this.state.student_id)
                 .then((response) => {
                 console.log()
                 this.setState({

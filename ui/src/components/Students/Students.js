@@ -4,7 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Popup from "reactjs-popup";
-
+import {backend} from "../../webConfig"
 
 class Students extends Component {
     constructor(){
@@ -34,7 +34,7 @@ class Students extends Component {
 
     cancelHandler(){
         this.setState(this.initialState);
-        axios.get('http://localhost:8080/getAllStudents/?first_name='+''+'&major='+''+'&college_name='+'' )
+        axios.get({backend}+'getAllStudents/?first_name='+''+'&major='+''+'&college_name='+'' )
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -46,7 +46,7 @@ class Students extends Component {
     searchHandler(){
         console.log('search with these', this.state.searchObject)
        
-        axios.get('http://localhost:8080/getAllStudents/?first_name='+this.state.searchObject.first_name+'&major='+this.state.searchObject.major+'&college_name='+this.state.searchObject.college_name+'&skills='+this.state.searchObject.skills)
+        axios.get({backend}+'getAllStudents/?first_name='+this.state.searchObject.first_name+'&major='+this.state.searchObject.major+'&college_name='+this.state.searchObject.college_name+'&skills='+this.state.searchObject.skills)
                 .then((response) => {
                 this.setState(this.initialState);
                     //update the state with the response data
@@ -60,7 +60,7 @@ class Students extends Component {
     //get the books data from backend  
     componentDidMount(){
         var data =''
-        axios.get('http://localhost:8080/getAllStudents/?first_name='+''+'&major='+''+'&college_name='+'' )
+        axios.get({backend}+'getAllStudents/?first_name='+''+'&major='+''+'&college_name='+'' )
                 .then((response) => {
                 //update the state with the response data
                 this.setState({

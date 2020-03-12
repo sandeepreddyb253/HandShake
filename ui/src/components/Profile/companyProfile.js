@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import TextareaAutosize from 'react-textarea-autosize';
+import {backend} from '../../webConfig'
 
 
 class companyProfile extends Component {
@@ -30,7 +31,7 @@ class companyProfile extends Component {
     cancelHandler(){
         this.setState(this.initialState)
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/companyProfile/'+data)
+        axios.get({backend}+'companyProfile/'+data)
                 .then((response) => {
                 console.log()
                 this.setState({
@@ -59,7 +60,7 @@ class companyProfile extends Component {
     
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return "http://localhost:8080/file/" + fileName+'/?role=company';
+        return {backend}+"file/" + fileName+'/?role=company';
     };
     
     EditHandler(){
@@ -101,7 +102,7 @@ class companyProfile extends Component {
     
         console.log('Save these ',this.state.companyObject)
         var resumePath;
-        await axios.post('http://localhost:8080/uploadFile/?companyId='+this.state.companyObject[0].company_id+'&type=companyProfilePic',this.state.companyObject[0].fileData)
+        await axios.post({backend}+'uploadFile/?companyId='+this.state.companyObject[0].company_id+'&type=companyProfilePic',this.state.companyObject[0].fileData)
         .then(response => {
             console.log("Status Code : ",response);
             if(response.status === 200){
@@ -116,7 +117,7 @@ class companyProfile extends Component {
         const companyObj = this.state.companyObject
         companyObj[0].resumePath = resumePath
 
-       await axios.put('http://localhost:8080/companyProfile/:'+this.state.companyObject[0].company_id, companyObj)
+       await axios.put({backend}+'companyProfile/:'+this.state.companyObject[0].company_id, companyObj)
               .then((response)=>{
                   console.log(response.status)
                   if(response.status === 200){
@@ -135,7 +136,7 @@ class companyProfile extends Component {
     componentDidMount(){
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/companyProfile/'+data)
+        axios.get({backend}+'companyProfile/'+data)
                 .then((response) => {
                 console.log()
                 this.setState({

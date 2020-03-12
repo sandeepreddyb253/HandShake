@@ -4,7 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Popup from "reactjs-popup";
-
+import {backend} from "../../webConfig"
 
 class Home extends Component {
     constructor(){
@@ -31,7 +31,7 @@ class Home extends Component {
    async componentDidMount(){
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
-       await axios.get('http://localhost:8080/home/'+data)       
+       await axios.get({backend}+'home/'+data)       
          .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -95,7 +95,7 @@ class Home extends Component {
         })
         if(cookie.load('cookie')){
             var data = cookie.load('cookie').split(':')[1]
-            axios.get('http://localhost:8080/home/'+data)
+            axios.get({backend}+'home/'+data)
                     .then((response) => {
                     //update the state with the response data
                     this.setState({
@@ -116,7 +116,7 @@ class Home extends Component {
 
     searchHandler(){
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/home/'+data+'/?company_name='+this.state.searchObject.company_name+'&postion='+this.state.searchObject.postion+'&job_location='+this.state.searchObject.job_location+'&category='+this.state.searchObject.category)
+        axios.get({backend}+'home/'+data+'/?company_name='+this.state.searchObject.company_name+'&postion='+this.state.searchObject.postion+'&job_location='+this.state.searchObject.job_location+'&category='+this.state.searchObject.category)
                 .then((response) => {
                 this.setState({
                     jobs:[]
@@ -144,7 +144,7 @@ class Home extends Component {
             dataArray:dataArray,
             
         }
-        await axios.post('http://localhost:8080/uploadFile/?studentId='+studentId+'&jobId='+job_id+'&type=resume',dataArray)
+        await axios.post({backend}+'uploadFile/?studentId='+studentId+'&jobId='+job_id+'&type=resume',dataArray)
         .then(response => {
             console.log("Status Code : ",response);
             if(response.status === 200){
@@ -160,7 +160,7 @@ class Home extends Component {
             studentId : cookie.load('cookie').split(':')[1],
             resumePath:resumePath
            }
-       await axios.post('http://localhost:8080/saveApplication',data)
+       await axios.post({backend}+'saveApplication',data)
         .then(response => {
             console.log("Status Code : ",response);
             if(response.status === 200){

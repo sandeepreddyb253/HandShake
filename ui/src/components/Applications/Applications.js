@@ -3,6 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import {backend} from '../../webConfig'
 
 class Applications extends Component {
     constructor(){
@@ -21,7 +22,7 @@ class Applications extends Component {
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
        
-        axios.get('http://localhost:8080/applications/'+data)
+        axios.get({backend}+'applications/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -45,7 +46,7 @@ class Applications extends Component {
             applications:[]
         })
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/applications/'+data)
+        axios.get({backend}+'applications/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -58,7 +59,7 @@ class Applications extends Component {
 
     searchHandler(){
         var data = cookie.load('cookie').split(':')[1]
-        axios.get('http://localhost:8080/applications/'+data+'/?status=' +this.state.searchObject.status)
+        axios.get({backend}+'applications/'+data+'/?status=' +this.state.searchObject.status)
                 .then((response) => {
                 this.setState({
                     applications:[]

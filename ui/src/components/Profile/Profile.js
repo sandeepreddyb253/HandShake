@@ -7,6 +7,7 @@ import { compareAsc, format } from 'date-fns';
 import {fetchProfile,saveExperience,saveEducation, saveStudentObject, deleteExperience, deleteEducation} from '../../ReduxModules/actions/index';
 import {connect} from 'react-redux';
 import Img from 'react-image'
+import {backend} from '../../webConfig'
 
 class Profile extends Component {
     constructor(){
@@ -102,7 +103,7 @@ class Profile extends Component {
     }
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return "http://localhost:8080/file/" + fileName+'/?role=students';
+        return {backend}+"file/" + fileName+'/?role=students';
       };
       
 

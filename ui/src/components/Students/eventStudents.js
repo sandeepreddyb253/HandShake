@@ -4,6 +4,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns'
+import {backend} from '../../webConfig'
 
 class eventStudents extends Component {
     constructor(props){
@@ -24,7 +25,7 @@ class eventStudents extends Component {
 
     componentDidMount(){
         console.log('+++++')
-        axios.get('http://localhost:8080/getEventStudents/'+this.state.event_id)
+        axios.get({backend}+'getEventStudents/'+this.state.event_id)
         .then((response) => {
         //update the state with the response data
         this.setState({

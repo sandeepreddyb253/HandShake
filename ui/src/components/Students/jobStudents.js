@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns'
 import Popup from 'reactjs-popup';
 //import PDFViewer from "pdf-viewer-reactjs"
+import {backend} from '../../webConfig'
 
 class jobStudents extends Component {
     constructor(props){
@@ -40,7 +41,7 @@ class jobStudents extends Component {
                 studentData = student;
             }
         })
-       await axios.put('http://localhost:8080/updateJobStatus',studentData)
+       await axios.put({backend}+'updateJobStatus',studentData)
         .then((response) => {
         console.log(response)
         if(response.status === 200){
@@ -55,7 +56,7 @@ class jobStudents extends Component {
 
     componentDidMount(){
         console.log('+++++','in Job students')
-        axios.get('http://localhost:8080/getJobStudents/'+this.state.job_id)
+        axios.get({backend}+'getJobStudents/'+this.state.job_id)
         .then((response) => {
         //update the state with the response data
         this.setState({
