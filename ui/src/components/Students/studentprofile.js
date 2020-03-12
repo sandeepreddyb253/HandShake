@@ -15,11 +15,15 @@ class Profile extends Component {
             student_id : this.props.match.params.id,
         }
         this.state = this.initialState;
+        this.profilePic = this.profilePic.bind(this)
         
         
     }  
 
-    
+    buildAvatarUrl = fileName => {
+        console.log('Building Avatar')
+        return "http://localhost:8080/file/" + fileName+'/?role=students';
+    };
 
     componentDidMount(){
         console.log('+++++')
@@ -53,11 +57,29 @@ class Profile extends Component {
         )
         })
 
+        let profilePic =  this.state.studentObject?.map(obj=>{
+            if(obj.profile_path){
+                return(<div className="wrapper">
+                <img src={this.buildAvatarUrl(obj.profile_path)} className="image--cover"></img>
+                </div>
+                )
+            }
+
+            else{
+                return(
+                 <div className="wrapper">
+                 <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>
+                 </div>
+                 )
+            }
+        })
+
         let basicDetails = this.state.studentObject.map(obj=>{
             return (
                 <div key = {obj.student_id} >
-                    <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg") }></img> 
-                    
+                    <div>
+                    {profilePic} 
+                       </div>                     
                     <p style = {{fontWeight: 'bold'}}>First Name:</p>
                     <p>{obj.first_name}</p>
                     

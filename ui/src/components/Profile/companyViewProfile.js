@@ -17,6 +17,11 @@ class companyViewProfile extends Component {
         
     }  
 
+    buildAvatarUrl = fileName => {
+        console.log('Building Avatar')
+        return "http://localhost:8080/file/" + fileName+'/?role=company';
+    };
+    
     
     componentDidMount(){
         var data = this.state.company_id
@@ -70,6 +75,29 @@ class companyViewProfile extends Component {
             redirectVar = <Redirect to= "/login"/>
             
         }
+
+        let profilePic =  this.state.companyObject?.map(obj=>{
+            if(obj.profile_path){
+                return(<div className="wrapper">
+                <img src={this.buildAvatarUrl(obj.profile_path)} className="image--cover"></img>
+                </div>
+                )
+            } else{
+                return(
+                 <div className="wrapper">
+                 <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>
+                 </div>
+                 )
+            }
+        })
+        
+        let imageDetails =  this.state.companyObject.map(obj => {
+            return(
+               <div key ={obj.company_id}> 
+                {profilePic}
+             
+                </div>
+            )})
         
 
         return(
@@ -89,8 +117,8 @@ class companyViewProfile extends Component {
 			</div>
 			<div className="col-sm-3">
 				
-				<div className="well">
-					 <img style = {{width:'75%'}} src ={require("../Util/Handshake.jpg")}></img> 
+				<div className="well" style = {{height:'225px'}}>
+					 {imageDetails} 
 					
 				</div>
 

@@ -83,9 +83,6 @@ class Applications extends Component {
                         <p> <span style={{fontWeight:'bold'}}>Company: </span>{application.company_name} , <span style={{fontWeight:'bold'}}>Applied on: </span>{application.application_date} </p>
                      <p><span className = "glyphicon glyphicon-info-sign"></span><span style={{fontWeight:'bold'}}>Status: </span>{application.status}</p>
 				</div>
-                <div className = "col-sm-3" style ={{width:'20%'}}>
-                <img style = {{width:'100%',marginTop:'20px',marginBottom:'20px'}} src ={require("../Util/Handshake.jpg") }></img> 
-                </div>
 		        </div>
                 </div>    
         )

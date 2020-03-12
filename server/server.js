@@ -13,7 +13,7 @@ var fs = require('fs')
 var fileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
     console.log('req in storage',req.query.id)
-    cb(null, './../ui/src/HandshakeFiles/Resumes')
+    cb(null, '/HandshakeFiles/Resumes')
   },
   filename: function (req, file, cb) {
     cb(null, req.query.studentId+'_'+req.query.jobId+'.pdf')
@@ -23,7 +23,7 @@ var fileStorage = multer.diskStorage({
 var studentProfileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
     console.log('req in storage',req.query.studentId)
-    cb(null, './../ui/src/HandshakeFiles/students/')
+    cb(null, './HandshakeFiles/students/')
   },
   filename: function (req, file, cb) {
     cb(null, req.query.studentId+'.jpg')
@@ -33,7 +33,7 @@ var studentProfileStorage = multer.diskStorage({
 var companyProfileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
     console.log('req in storage',req.query.studentId)
-    cb(null, './../ui/src/HandshakeFiles/company/')
+    cb(null, '/HandshakeFiles/company/')
   },
   filename: function (req, file, cb) {
     cb(null, req.query.companyId+'.jpg')
@@ -547,7 +547,7 @@ app.put('/profile/editExperience/:id', function(request, response) {
             console.log(results);
             }else{
                 console.log('inserting experince')
-                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location,from_date,to_date) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location + "','" +exp.from_date +"','"+"','" +exp.to_date +"')";
+                var insertQuery = "insert into student_experience_details (fk_student_id,company,postion,work_desc,work_location,from_date,to_date) values ('" + student_id + "','"+exp.company+"','" + exp.postion + "','" +exp.work_desc +"','" +exp.work_location + "','" +exp.from_date +"','"+exp.to_date +"')";
                 results = await getResults(insertQuery,values);
             }
         })
@@ -617,7 +617,7 @@ app.put('/profile/editExperience/:id', function(request, response) {
             results = await getResults(updateQuery,values);
             console.log(results);
             }else{
-                var insertQuery = "insert into student_educational_details (fk_student_id,college,course,grad_date,gpa) values ('" + student_id + "','"+edu.college+"','" + edu.course +  "','"+edu.grad_date+"','" + "','"+edu.gpa +"')";
+                var insertQuery = "insert into student_educational_details (fk_student_id,college,course,grad_date,gpa) values ('" + student_id + "','"+edu.college+"','" + edu.course +  "','"+edu.grad_date+"','"+edu.gpa +"')";
                 results = await getResults(insertQuery,values);
             }
         })
@@ -899,3 +899,26 @@ async function modifyStudentsEventsData(event,data){
 
     
 }
+
+
+app.get("/file/:name", (req, res) => {
+    const name = req.params.name;
+    console.log("/file req.params: " + JSON.stringify(req.params));
+    const path = __dirname +"/HandshakeFiles/"+req.query.role+"/"+ name;
+
+    console.log('path::',path)
+    try {
+      if (fs.existsSync(path)) {
+        res.sendFile(path);
+      } else {
+        res.status(400);
+        res.statusMessage("Not Found");
+        res.end();
+      }
+    } catch (err) {
+      res.status(500);
+      console.log("/file/:name error: " + err);
+      res.end();
+    }
+   });
+   

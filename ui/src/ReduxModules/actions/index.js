@@ -49,7 +49,7 @@ export function saveStudentObject(payload){
         .then(response => {
             console.log("Status Code : ",response);
             if(response.status === 200){
-                 resumePath = response.data.path
+                 resumePath = response.data.filename
                 
             }
             else{

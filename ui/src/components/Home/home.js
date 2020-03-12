@@ -25,6 +25,7 @@ class Home extends Component {
         this.onFileChange = this.onFileChange.bind(this);
         this.openPopup = this.openPopup.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.profilePic = this.profilePic.bind(this)
     }  
     //get the books data from backend  
    async componentDidMount(){
@@ -50,6 +51,31 @@ class Home extends Component {
         this.setState({
             openPopup :false
         })
+    }
+
+    profilePic(company_name){
+        if(company_name === 'Apple Inc.,'){
+                
+            return(<div>
+                
+               <img src={require("../../HandshakeFiles/company/2.jpg")} style = {{width:'100%',height:'65px',marginTop:'20px',marginBottom:'20px'}}></img>
+               </div>
+              )
+          }else if(company_name === 'Tesla Inc.,'){
+            return(<div>
+                
+               <img src={require("../../HandshakeFiles/company/4.jpg")} style = {{width:'100%',height:'65px',marginTop:'20px',marginBottom:'20px'}}></img>
+               </div>
+              )
+          }
+          else{
+              return(
+               <div>
+               <img src={require("../Util/Handshake.jpg")} style = {{width:'100%',height:'65px',marginTop:'20px',marginBottom:'20px'}}></img>
+               </div>
+               )
+          }
+
     }
     onFileChange(e,id){
         let fileData = new FormData()
@@ -163,9 +189,7 @@ class Home extends Component {
             return <Redirect to={this.state.redirect} />;
             }
         
-        
-        //console.log(this.state.jobs)
-        //iterate over books to create a table row
+         
         let details = this.state.jobs.map(job => {
             return(
                 <div className="row" key = {job.postion}>
@@ -177,28 +201,10 @@ class Home extends Component {
                          <p style = {{fontSize :'10px'}}>*Upload Resume for better chances of getting an interview call</p>
                          <input type="file" name="file" disabled = {job.disable} onChange={(e)=>this.onFileChange(e,job.job_id)} />
             <button type="submit" style = {{width:'75px'}} disabled = {job.disable} onClick = {(e)=>this.saveApplication(job.job_id)} >{job.status}</button>
-                         {/* <Popup 
-                        open = {this.state.openPopup}
-                        trigger = {<button  style = {{float :'left',width :'65px',height:'30px'}}  disabled = {job.disable} onClick = {this.openPopup}>  {job.status}</button>}
-                        closeOnDocumentClick
-                        onClose={this.closeModal}
-                        modal
-                         >
-                 
-               <a className="close" onClick={this.closeModal}>
-              &times;
-                </a> 
-               
-                <h3>Upload Resume for better chances of getting hired !</h3>
-                <input type="file" name="file" onChange={(e)=>this.onFileChange(e,job.job_id)} />
-                <button type="submit" style = {{width:'75px'}} onClick = {(e)=>this.saveApplication(job.job_id)} >Submit</button>
-                
-                </Popup> */}
-                
-                        
+                                 
 				</div>
                 <div className = "col-sm-3" style ={{width:'20%'}}>
-                <img style = {{width:'100%',marginTop:'20px',marginBottom:'20px'}} src ={require("../Util/Handshake.jpg") }></img> 
+                    {this.profilePic(job.company_name)} 
                 <Popup trigger={<a style = {{marginTop:'20px',align:'center'}}>Description </a>}
                          modal
                     closeOnDocumentClick>

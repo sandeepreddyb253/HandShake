@@ -4,6 +4,8 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import { compareAsc, format } from 'date-fns'
+import Popup from 'reactjs-popup';
+//import PDFViewer from "pdf-viewer-reactjs"
 
 class jobStudents extends Component {
     constructor(props){
@@ -83,13 +85,22 @@ class jobStudents extends Component {
                         <p> <span style = {{fontWeight:'bold'}}>College: </span>   {student.college_name}</p> 
                         <p><span style = {{fontWeight:'bold'}}>Skills: </span>   {student.skills}</p>
                        
-                        <select style = {{width:'75%',height:'25px'}} onChange = {(e)=>this.changeHandler(e,student.map_application_id,"status")} placeholder = "College Name" defaultValue ={student.status} >
+                        <select style = {{width:'60%',height:'25px'}} onChange = {(e)=>this.changeHandler(e,student.map_application_id,"status")} placeholder = "College Name" defaultValue ={student.status} >
                         <option value="Pending">Pending</option>
                         <option value="Reviewed">Reviewed</option>
                         <option value="Declined">Declined</option>
                         <option value="Accepted">Accepted</option>
                         </select>
-                        <button  style = {{float :'right',width :'100px',height:'30px',margin:'0px'}} onClick = {(e)=>this.viewProfile(student.student_id)}> View Profile</button>
+                        <Popup
+                        trigger = {<button  style = {{float :'right',width :'110px',height:'30px',margin:'0px'}} >
+                             View Resume</button>} 
+                             modal
+                             closeOnDocumentClick > 
+                          {/* <PDFViewer 
+                            document={{ url: 'https://arxiv.org/pdf/quant-ph/0410100.pdf', }} />   */}
+                            
+                             </Popup>
+                        <button  style = {{float :'right',width :'100px',height:'30px',margin:'0px',marginRight:'5px'}} onClick = {(e)=>this.viewProfile(student.student_id)}> View Profile</button>
                         <button  style = {{float :'right',width :'120px',height:'30px',margin:'0px',marginRight:'5px'}} onClick = {(e)=>this.changeStatus(student.student_id)}> Update Status</button>
                         
 				</div>

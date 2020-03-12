@@ -57,6 +57,10 @@ class companyProfile extends Component {
 
     }
     
+    buildAvatarUrl = fileName => {
+        console.log('Building Avatar')
+        return "http://localhost:8080/file/" + fileName+'/?role=company';
+    };
     
     EditHandler(){
         this.setState({
@@ -101,7 +105,7 @@ class companyProfile extends Component {
         .then(response => {
             console.log("Status Code : ",response);
             if(response.status === 200){
-                resumePath = response.data.path
+                resumePath = response.data.filename
                 console.log('path:',resumePath)
             }
             else{
@@ -195,15 +199,12 @@ class companyProfile extends Component {
         })
 
         let profilePic =  this.state.companyObject?.map(obj=>{
-            if(obj.company_name === 'Apple Inc.,'){
-                var path = "../"+obj.profile_path
-                console.log('path::::',path.toString())
-              return(<div key = {obj.student_id} className="wrapper">
-                  
-                 <img src={require("../../HandshakeFiles/company/2.jpg")} className="image--cover"></img>
-                 </div>
+            if(obj.profile_path){
+                return(<div className="wrapper">
+                <img src={this.buildAvatarUrl(obj.profile_path)} className="image--cover"></img>
+                </div>
                 )
-            }else{
+            } else{
                 return(
                  <div className="wrapper">
                  <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>

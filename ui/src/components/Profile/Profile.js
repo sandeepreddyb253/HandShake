@@ -93,13 +93,18 @@ class Profile extends Component {
                 let fileData = new FormData()
              console.log('fileData in state',this.state.fileData)
                 fileData.append("studentProfileStorage", e.target.files[0])
-        
+                obj.profile ='../'
                 obj.fileData = fileData;
                 console.log(e.target.files[0]);
             }
         })
 
     }
+    buildAvatarUrl = fileName => {
+        console.log('Building Avatar')
+        return "http://localhost:8080/file/" + fileName+'/?role=students';
+      };
+      
 
     EditExperience(){
         this.setState({
@@ -311,18 +316,17 @@ class Profile extends Component {
         })
 
        let profilePic =  this.props.studentObject?.map(obj=>{
-           if(obj.first_name === 'Sandeep'){
-               var path = "../"+obj.profile_path
-               console.log('path::::',path.toString())
-             return(<div key = {obj.student_id} className="wrapper">
-                 
-                <img src={require("../../HandshakeFiles/students/1.jpg")} className="image--cover"></img>
-                </div>
-               )
-           }else{
-               return(
+           if(!obj.profile_path){
+            return(
                 <div className="wrapper">
                 <img src={require("../Util/Handshake.jpg")} className="image--cover"></img>
+                </div>
+                )
+            }
+           else{
+               return(
+                <div className="wrapper">
+                <img src={this.buildAvatarUrl(obj.profile_path)} className="image--cover"></img>
                 </div>
                 )
            }

@@ -116,9 +116,8 @@ saveRegistration(event_id){
                          <button  style = {{float :'left',width :'85px',height:'30px'}} disabled = {event.disable} onClick = {(e)=>this.saveRegistration(event.event_id)}> {event.status}</button>
                         
 				</div>
-                <div className = "col-sm-3" style ={{width:'20%'}}>
-                <img style = {{width:'100%',marginTop:'20px',marginBottom:'20px'}} src ={require("../Util/Handshake.jpg") }></img> 
-                <Popup trigger={<a style = {{marginTop:'20px',align:'center'}}>More Details..</a>}
+                <div className = "col-sm-3" style ={{width:'20%',marginTop:'100px'}}> 
+                <Popup trigger={<a style = {{marginTop:'100px'}}>More Details..</a>}
                          modal
                     closeOnDocumentClick>
                 <div> <h4 style = {{fontWeight:'bold'}}>Event Description</h4>
