@@ -20,13 +20,13 @@ class companyViewProfile extends Component {
 
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return {backend}+"file/" + fileName+'/?role=company';
+        return backend+"file/" + fileName+'/?role=company';
     };
     
     
     componentDidMount(){
         var data = this.state.company_id
-        axios.get({backend}+'companyProfile/'+data)
+        axios.get(backend+'companyProfile/'+data)
                 .then((response) => {
                 console.log()
                 this.setState({

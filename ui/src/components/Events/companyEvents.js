@@ -51,7 +51,7 @@ class companyEvents extends Component {
     cancelHandler(e,id){
         var data = cookie.load('cookie').split(':')[1]
         this.setState(this.initialState)
-        axios.get({backend}+'companyEvents/'+data)
+        axios.get(backend+'companyEvents/'+data)
                 .then((response) => {
                 //update the state with the response data
                 this.setState({
@@ -110,7 +110,7 @@ class companyEvents extends Component {
 
             })
     console.log('data in save handler', data)        
-   await axios.put({backend}+'saveEvents/', data)
+   await axios.put(backend+'saveEvents/', data)
               .then((response)=>{
                   console.log(response.status)
                   if(response.status === 200){
@@ -127,7 +127,7 @@ class companyEvents extends Component {
         if(cookie.load('cookie')){
         var data = cookie.load('cookie').split(':')[1]
         console.log(data)
-        axios.get({backend}+'/companyevents/'+data)
+        axios.get(backend+'/companyevents/'+data)
         .then((response) => {
         this.setState({
             events : this.state.events.concat(response.data)

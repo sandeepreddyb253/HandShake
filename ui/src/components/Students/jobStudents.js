@@ -41,7 +41,7 @@ class jobStudents extends Component {
                 studentData = student;
             }
         })
-       await axios.put({backend}+'updateJobStatus',studentData)
+       await axios.put(backend+'updateJobStatus',studentData)
         .then((response) => {
         console.log(response)
         if(response.status === 200){
@@ -56,7 +56,7 @@ class jobStudents extends Component {
 
     componentDidMount(){
         console.log('+++++','in Job students')
-        axios.get({backend}+'getJobStudents/'+this.state.job_id)
+        axios.get(backend+'getJobStudents/'+this.state.job_id)
         .then((response) => {
         //update the state with the response data
         this.setState({

@@ -23,12 +23,12 @@ class Profile extends Component {
 
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return {backend}+"file/" + fileName+'/?role=students';
+        return backend+"file/" + fileName+'/?role=students';
     };
 
     componentDidMount(){
         console.log('+++++')
-        axios.get({backend}+'profile/'+ this.state.student_id)
+        axios.get(backend+'profile/'+ this.state.student_id)
                 .then((response) => {
                 console.log()
                 this.setState({

@@ -23,7 +23,7 @@ class Navbar extends Component {
     }
 
     componentDidMount(){
-        axios.get({backend}+'tabHeaders/')
+        axios.get(backend+'tabHeaders/')
                 .then((response) => {
                 //update the state with the response data
                 this.setState({

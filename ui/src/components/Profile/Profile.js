@@ -103,7 +103,7 @@ class Profile extends Component {
     }
     buildAvatarUrl = fileName => {
         console.log('Building Avatar')
-        return {backend}+"file/" + fileName+'/?role=students';
+        return backend+"file/" + fileName+'/?role=students';
       };
       
 

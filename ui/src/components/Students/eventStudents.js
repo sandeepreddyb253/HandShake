@@ -25,7 +25,7 @@ class eventStudents extends Component {
 
     componentDidMount(){
         console.log('+++++')
-        axios.get({backend}+'getEventStudents/'+this.state.event_id)
+        axios.get(backend+'getEventStudents/'+this.state.event_id)
         .then((response) => {
         //update the state with the response data
         this.setState({
